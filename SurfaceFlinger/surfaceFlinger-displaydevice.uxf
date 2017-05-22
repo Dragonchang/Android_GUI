@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.2">
+  <zoom_level>9</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>837</x>
+      <y>837</y>
+      <w>324</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>BufferQueue
+--
+static void createBufferQueue
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>837</x>
+      <y>630</y>
+      <w>324</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>BufferQueueCore
+--
+sp&lt;IGraphicBufferAlloc&gt; mAllocator;
+sp&lt;IConsumerListener&gt; mConsumerListener;
+sp&lt;IProducerListener&gt; mConnectedProducerListener;
+
+--
+Vector&lt;BufferItem&gt; mQueue
+BufferSlot[64] mSlots
+
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>324</x>
+      <y>81</y>
+      <w>441</w>
+      <h>324</h>
+    </coordinates>
+    <panel_attributes>IGraphicBufferProducer
+--
+status_t requestBuffer(int bufferIdx, sp&lt;GraphicBuffer&gt;* buf)
+status_t setBufferCount(int bufferCount)
+status_t dequeueBuffer(int *buf, sp&lt;Fence&gt;* fence, bool async
+status_t detachBuffer(int slot)
+ status_t detachNextBuffer(sp&lt;GraphicBuffer&gt;* outBuffer,
+            sp&lt;Fence&gt;* outFence)
+status_t attachBuffer(int* slot, const sp&lt;GraphicBuffer&gt;&amp; buffer)
+status_t queueBuffer(int buf,
+            const QueueBufferInput&amp; input, QueueBufferOutput* output)
+void cancelBuffer(int buf, const sp&lt;Fence&gt;&amp; fence)
+int query(int what, int* value)
+status_t connect(const sp&lt;IProducerListener&gt;&amp; listener,
+status_t disconnect(int api)
+status_t setSidebandStream(const sp&lt;NativeHandle&gt;&amp; stream)
+void allocateBuffers(bool async, uint32_t width, uint32_t height,
+status_t allowAllocation(bool allow)
+status_t setGenerationNumber(uint32_t generationNumber)
+String8 getConsumerName()
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>315</x>
+      <y>630</y>
+      <w>441</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>BufferQueueProducer
+--
+sp&lt;BufferQueueCore&gt; mCore;
+BufferQueueDefs::SlotsType&amp; mSlots;
+--
+void binderDied(const wp&lt;IBinder&gt;&amp; who)
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>324</x>
+      <y>477</y>
+      <w>441</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>BnGraphicBufferProducer
+--
+status_t    onTransact( uint32_t code,
+                                    const Parcel&amp; data,
+                                    Parcel* reply,
+                                    uint32_t flags = 0);
+
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>513</x>
+      <y>378</y>
+      <w>44</w>
+      <h>116</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;99;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>513</x>
+      <y>558</y>
+      <w>44</w>
+      <h>62</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>27;45;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>729</x>
+      <y>648</y>
+      <w>125</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;27;108;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>9</x>
+      <y>477</y>
+      <w>270</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>IBinder::DeathRecipient
+--
+void binderDied(const wp&lt;IBinder&gt;&amp; who)
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>108</x>
+      <y>576</y>
+      <w>449</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>27;27;432;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>108</x>
+      <y>549</y>
+      <w>45</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>27;27;27;54</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>360</x>
+      <y>576</y>
+      <w>36</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;54;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1251</x>
+      <y>639</y>
+      <w>441</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>BufferQueueConsumer
+--
+sp&lt;BufferQueueCore&gt; mCore;
+BufferQueueDefs::SlotsType&amp; mSlots;
+String8 mConsumerName;
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1134</x>
+      <y>648</y>
+      <w>134</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>117;27;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1242</x>
+      <y>477</y>
+      <w>441</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>BnGraphicBufferConsumer
+--
+status_t    onTransact( uint32_t code,
+                                    const Parcel&amp; data,
+                                    Parcel* reply,
+                                    uint32_t flags = 0);
+
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1242</x>
+      <y>63</y>
+      <w>441</w>
+      <h>360</h>
+    </coordinates>
+    <panel_attributes>IGraphicBufferConsumer
+--
+status_t acquireBuffer(BufferItem* buffer, nsecs_t presentWhen,
+            uint64_t maxFrameNumber = 0)
+status_t detachBuffer(int slot)
+status_t attachBuffer(int *outSlot,
+            const sp&lt;GraphicBuffer&gt;&amp; buffer)
+status_t releaseBuffer(int buf, uint64_t frameNumber,
+status_t consumerConnect(const sp&lt;IConsumerListener&gt;&amp; consumer, 
+            bool controlledByApp)
+status_t consumerDisconnect()
+status_t getReleasedBuffers(uint64_t* slotMask)
+status_t setDefaultBufferSize(uint32_t w, uint32_t h)
+status_t setDefaultMaxBufferCount(int bufferCount)
+status_t disableAsyncBuffer()
+status_t setMaxAcquiredBufferCount(int maxAcquiredBuffers)
+void setConsumerName(const String8&amp; name)
+status_t setDefaultBufferFormat(PixelFormat defaultFormat)
+status_t setDefaultBufferDataSpace(
+            android_dataspace defaultDataSpace)
+status_t setConsumerUsageBits(uint32_t usage)
+status_t setTransformHint(uint32_t hint)
+sp&lt;NativeHandle&gt; getSidebandStream()
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1431</x>
+      <y>396</y>
+      <w>44</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;81;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1431</x>
+      <y>558</y>
+      <w>44</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;81;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>837</x>
+      <y>396</y>
+      <w>324</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes> 
+BnGraphicBufferAlloc
+
+
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>837</x>
+      <y>513</y>
+      <w>324</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes> 
+GraphicBufferAlloc
+
+
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>837</x>
+      <y>279</y>
+      <w>324</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes> IGraphicBufferAlloc
+--
+sp&lt;GraphicBuffer&gt; createGraphicBuffer()
+
+
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>963</x>
+      <y>315</y>
+      <w>44</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;81;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>963</x>
+      <y>432</y>
+      <w>44</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;81;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>963</x>
+      <y>549</y>
+      <w>44</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;81;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Note</type>
+    <coordinates>
+      <x>0</x>
+      <y>0</y>
+      <w>3330</w>
+      <h>1494</h>
+    </coordinates>
+    <panel_attributes>BufferQueue</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>963</x>
+      <y>747</y>
+      <w>44</w>
+      <h>107</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>27;90;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1782</x>
+      <y>837</y>
+      <w>441</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>FramebufferSurface
+--
+int mDisplayType;
+sp&lt;GraphicBuffer&gt; mCurrentBuffer;
+HWComposer&amp; mHwc;
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1782</x>
+      <y>477</y>
+      <w>441</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>ConsumerListener
+--
+void onFrameAvailable(const BufferItem&amp; item)
+void onFrameReplaced(const BufferItem&amp; /* item */)
+void onBuffersReleased()
+void onSidebandStreamChanged()
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1782</x>
+      <y>630</y>
+      <w>441</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>ConsumerBase
+--
+wp&lt;FrameAvailableListener&gt; mFrameAvailableListener;
+sp&lt;IGraphicBufferConsumer&gt; mConsumer;
+
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1962</x>
+      <y>558</y>
+      <w>44</w>
+      <h>89</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;72;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1962</x>
+      <y>711</y>
+      <w>44</w>
+      <h>143</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;126;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1665</x>
+      <y>657</y>
+      <w>134</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>117;27;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2322</x>
+      <y>612</y>
+      <w>441</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>DisplaySurface
+--
+status_t beginFrame(bool mustRecompose)
+status_t prepareFrame(CompositionType compositionType)
+status_t compositionComplete()
+status_t advanceFrame()
+void onFrameCommitted()
+void dumpAsString(String8&amp; result)
+void resizeBuffers(const uint32_t w, const uint32_t h)
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1962</x>
+      <y>765</y>
+      <w>602</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>27;27;585;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2520</x>
+      <y>729</y>
+      <w>45</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;63;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2322</x>
+      <y>837</y>
+      <w>441</w>
+      <h>252</h>
+    </coordinates>
+    <panel_attributes>DisplayDevice
+--
+Region dirtyRegion;
+Region swapRegion;
+Region undefinedRegion;
+sp&lt;ANativeWindow&gt; mNativeWindow;
+sp&lt;DisplaySurface&gt; mDisplaySurface;
+
+EGLConfig       mConfig;
+EGLDisplay      mDisplay;
+EGLSurface      mSurface;
+int             mDisplayWidth;
+int             mDisplayHeight;
+
+Vector&lt; sp&lt;Layer&gt; &gt; mVisibleLayersSortedByZ;
+
+Rect mViewport;
+Rect mFrame;
+Rect mScissor;
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2196</x>
+      <y>873</y>
+      <w>135</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>126;27;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1287</x>
+      <y>1125</y>
+      <w>441</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>Surface
+--
+sp&lt;IGraphicBufferProducer&gt; mGraphicBufferProducer;
+
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1287</x>
+      <y>873</y>
+      <w>441</w>
+      <h>189</h>
+    </coordinates>
+    <panel_attributes>ANativeWindow
+--
+int     (*setSwapInterval)(struct ANativeWindow* window,
+                int interval)
+int     (*dequeueBuffer_DEPRECATED)(struct ANativeWindow* window,
+                struct ANativeWindowBuffer** buffer);
+int     (*dequeueBuffer)(struct ANativeWindow* window,
+                struct ANativeWindowBuffer** buffer, int* fenceFd);
+int     (*queueBuffer)(struct ANativeWindow* window,
+                struct ANativeWindowBuffer* buffer, int fenceFd);
+int     (*cancelBuffer)(struct ANativeWindow* window,
+                struct ANativeWindowBuffer* buffer, int fenceFd);
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1701</x>
+      <y>981</y>
+      <w>638</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>621;27;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1467</x>
+      <y>1035</y>
+      <w>44</w>
+      <h>107</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;90;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>468</x>
+      <y>702</y>
+      <w>44</w>
+      <h>512</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>27;495;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>468</x>
+      <y>1170</y>
+      <w>828</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>819;27;27;27</additional_attributes>
+  </element>
+</diagram>

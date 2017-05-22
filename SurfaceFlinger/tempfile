@@ -1,0 +1,155 @@
+(gdb) bt
+#0  android::MessageQueue::invalidate (this=<optimized out>) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:163
+#1  0xb6f2fd98 in android::Layer::onFrameAvailable (this=0xb7d558a0, item=...) at frameworks/native/services/surfaceflinger/Layer.cpp:196
+#2  0xb6cca2d0 in android::ConsumerBase::onFrameAvailable (this=<optimized out>, item=...) at frameworks/native/libs/gui/ConsumerBase.cpp:113
+#3  0xb6cc2244 in android::BufferQueue::ProxyConsumerListener::onFrameAvailable (this=<optimized out>, item=...) at frameworks/native/libs/gui/BufferQueue.cpp:38
+#4  0xb6cc826c in android::BufferQueueProducer::queueBuffer (this=<optimized out>, slot=<optimized out>, input=..., output=<optimized out>) at frameworks/native/libs/gui/BufferQueueProducer.cpp:724
+#5  0xb6ccff8c in android::BnGraphicBufferProducer::onTransact (this=0xb7d6f8e8, code=<optimized out>, data=..., reply=0xb66f0820, flags=<optimized out>)
+    at frameworks/native/libs/gui/IGraphicBufferProducer.cpp:406
+#6  0xb6ee79ee in android::BBinder::transact (this=0xb7d6f8ec, code=7, data=..., reply=0xb66f0820, flags=16) at vendor/htc/native/libs/binder/Binder.cpp:108
+#7  0xb6eed02a in android::IPCThreadState::executeCommand (this=this@entry=0xb7c4a720, cmd=cmd@entry=-2144833022) at vendor/htc/native/libs/binder/IPCThreadState.cpp:1118
+#8  0xb6eed1ac in android::IPCThreadState::getAndExecuteCommand (this=this@entry=0xb7c4a720) at vendor/htc/native/libs/binder/IPCThreadState.cpp:433
+#9  0xb6eed224 in android::IPCThreadState::joinThreadPool (this=0xb7c4a720, isMain=<optimized out>) at vendor/htc/native/libs/binder/IPCThreadState.cpp:497
+#10 0xb6ef2194 in android::PoolThread::threadLoop (this=0xb7c4a6e8) at vendor/htc/native/libs/binder/ProcessState.cpp:65
+#11 0xb6ec5aee in android::Thread::_threadLoop (user=0xb7c4a6e8) at system/core/libutils/Threads.cpp:758
+#12 0xb6dfa100 in __pthread_start (arg=0xb66f0930, arg@entry=<error reading variable: value has been optimized out>) at bionic/libc/bionic/pthread_create.cpp:199
+#13 0xb6dd10d4 in __start_thread (fn=<optimized out>, arg=<optimized out>) at bionic/libc/bionic/clone.cpp:41
+#14 0x00000000 in ?? ()
+
+
+(gdb) bt
+#0  android::MessageQueue::invalidate (this=<optimized out>) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:163
+#1  0xb6f3999c in setTransactionFlags (this=0xb7c48df0, flags=1) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:2134
+#2  android::SurfaceFlinger::createLayer (this=0xb7c48df0, name=..., client=..., w=<optimized out>, h=<optimized out>, format=-3, flags=<optimized out>, handle=<optimized out>, gbp=<optimized out>)
+    at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:2373
+#3  0xb6f29bd2 in android::Client::createSurface(android::String8 const&, unsigned int, unsigned int, int, unsigned int, android::sp<android::IBinder>*, android::sp<android::IGraphicBufferProducer>*)::MessageCreateLayer::handler() (this=0xb7d23768) at frameworks/native/services/surfaceflinger/Client.cpp:142
+#4  0xb6f33222 in android::MessageBase::handleMessage (this=0xb7d23768) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:46
+#5  0xb6ec8c92 in android::Looper::pollInner (this=this@entry=0xb7c4a350, timeoutMillis=<optimized out>, timeoutMillis@entry=-1) at system/core/libutils/Looper.cpp:334
+#6  0xb6ec8dd2 in android::Looper::pollOnce (this=0xb7c4a350, timeoutMillis=-1, outFd=0x0, outEvents=0x0, outData=0x0) at system/core/libutils/Looper.cpp:216
+#7  0xb6f335b0 in pollOnce (this=0xb7c4f648, timeoutMillis=-1) at system/core/include/utils/Looper.h:265
+#8  android::MessageQueue::waitMessage (this=0xb7c48f9c) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:115
+#9  0xb6f35f80 in waitForEvent (this=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:769
+#10 android::SurfaceFlinger::run (this=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:801
+#11 0xb6fafefc in main () at frameworks/native/services/surfaceflinger/main_surfaceflinger.cpp:52
+
+
+(gdb) bt
+#0  android::MessageQueue::invalidate (this=<optimized out>) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:163
+#1  0xb6f31f48 in android::Layer::latchBuffer (this=0xb7d558a0, recomputeVisibleRegions=@0xbe84e7ef: false) at frameworks/native/services/surfaceflinger/Layer.cpp:1383
+#2  0xb6f36a68 in android::SurfaceFlinger::handlePageFlip (this=0xb7c48df0) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:1859
+#3  0xb6f36552 in android::SurfaceFlinger::handleMessageInvalidate (this=0xb7c48df0) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:936
+#4  0xb6f36478 in android::SurfaceFlinger::onMessageReceived (this=0xb7c48df0, what=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:908
+#5  0xb6ec8c92 in android::Looper::pollInner (this=this@entry=0xb7c4a350, timeoutMillis=<optimized out>, timeoutMillis@entry=-1) at system/core/libutils/Looper.cpp:334
+#6  0xb6ec8dd2 in android::Looper::pollOnce (this=0xb7c4a350, timeoutMillis=-1, outFd=0x0, outEvents=0x0, outData=0x0) at system/core/libutils/Looper.cpp:216
+#7  0xb6f335b0 in pollOnce (this=0xb7c4f648, timeoutMillis=-1) at system/core/include/utils/Looper.h:265
+#8  android::MessageQueue::waitMessage (this=0xb7c48f9c) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:115
+#9  0xb6f35f80 in waitForEvent (this=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:769
+#10 android::SurfaceFlinger::run (this=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:801
+#11 0xb6fafefc in main () at frameworks/native/services/surfaceflinger/main_surfaceflinger.cpp:52
+
+
+(gdb) bt
+#0  android::MessageQueue::invalidate (this=<optimized out>) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:163
+#1  0xb6f36680 in android::SurfaceFlinger::handleMessageRefresh (this=0xb7c48df0) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:954
+#2  0xb6f36442 in android::SurfaceFlinger::onMessageReceived (this=0xb7c48df0, what=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:919
+#3  0xb6ec8c92 in android::Looper::pollInner (this=this@entry=0xb7c4a350, timeoutMillis=<optimized out>, timeoutMillis@entry=-1) at system/core/libutils/Looper.cpp:334
+#4  0xb6ec8dd2 in android::Looper::pollOnce (this=0xb7c4a350, timeoutMillis=-1, outFd=0x0, outEvents=0x0, outData=0x0) at system/core/libutils/Looper.cpp:216
+#5  0xb6f335b0 in pollOnce (this=0xb7c4f648, timeoutMillis=-1) at system/core/include/utils/Looper.h:265
+#6  android::MessageQueue::waitMessage (this=0xb7c48f9c) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:115
+#7  0xb6f35f80 in waitForEvent (this=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:769
+#8  android::SurfaceFlinger::run (this=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:801
+#9  0xb6fafefc in main () at frameworks/native/services/surfaceflinger/main_surfaceflinger.cpp:52
+
+
+
+
+
+
+
+
+
+
+
+
+(gdb) bt
+#0  android::MessageQueue::invalidate (this=<optimized out>) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:163
+#1  0xb6f393e4 in setTransactionFlags (this=0xb7c48df0, flags=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:2134
+#2  android::SurfaceFlinger::setTransactionState (this=0xb7c48df0, state=..., displays=..., flags=0) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:2195
+#3  0xb6cd3dee in android::BnSurfaceComposer::onTransact (this=0xb7c48df0, code=<optimized out>, data=..., reply=<optimized out>, flags=<optimized out>)
+    at frameworks/native/libs/gui/ISurfaceComposer.cpp:343
+#4  0xb6f3b0b8 in android::SurfaceFlinger::onTransact (this=0xb7c48df0, code=8, data=..., reply=0xb66f0820, flags=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:2956
+#5  0xb6ee79ee in android::BBinder::transact (this=0xb7c48df4, code=8, data=..., reply=0xb66f0820, flags=16) at vendor/htc/native/libs/binder/Binder.cpp:108
+#6  0xb6eed02a in android::IPCThreadState::executeCommand (this=this@entry=0xb7c4a720, cmd=cmd@entry=-2144833022) at vendor/htc/native/libs/binder/IPCThreadState.cpp:1118
+#7  0xb6eed1ac in android::IPCThreadState::getAndExecuteCommand (this=this@entry=0xb7c4a720) at vendor/htc/native/libs/binder/IPCThreadState.cpp:433
+#8  0xb6eed224 in android::IPCThreadState::joinThreadPool (this=0xb7c4a720, isMain=<optimized out>) at vendor/htc/native/libs/binder/IPCThreadState.cpp:497
+#9  0xb6ef2194 in android::PoolThread::threadLoop (this=0xb7c4a6e8) at vendor/htc/native/libs/binder/ProcessState.cpp:65
+#10 0xb6ec5aee in android::Thread::_threadLoop (user=0xb7c4a6e8) at system/core/libutils/Threads.cpp:758
+#11 0xb6dfa100 in __pthread_start (arg=0xb66f0930, arg@entry=<error reading variable: value has been optimized out>) at bionic/libc/bionic/pthread_create.cpp:199
+#12 0xb6dd10d4 in __start_thread (fn=<optimized out>, arg=<optimized out>) at bionic/libc/bionic/clone.cpp:41
+#13 0x00000000 in ?? ()
+
+
+
+
+
+(gdb) bt
+#0  android::MessageQueue::invalidate (this=<optimized out>) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:163
+#1  0xb6f3919e in setTransactionFlags (this=0xb7c48df0, flags=1) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:2134
+#2  android::SurfaceFlinger::removeLayer (this=0xb7c48df0, layer=...) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:2117
+#3  0xb6f28fba in android::Client::~Client (this=0xb7cf2c88, vtt=0xb6f52590 <VTT for android::Client>) at frameworks/native/services/surfaceflinger/Client.cpp:48
+#4  0xb6f2912c in virtual thunk to android::Client::~Client() () at frameworks/native/services/surfaceflinger/Client.cpp:43
+#5  0xb6ec4074 in android::RefBase::decStrong (this=0xb7cf2cbc, id=0xb7c48ce0) at system/core/libutils/RefBase.cpp:353
+#6  0xb6eec832 in android::IPCThreadState::processPendingDerefs (this=0xb7c4a720) at vendor/htc/native/libs/binder/IPCThreadState.cpp:470
+#7  0xb6eed21a in android::IPCThreadState::joinThreadPool (this=0xb7c4a720, isMain=<optimized out>) at vendor/htc/native/libs/binder/IPCThreadState.cpp:492
+#8  0xb6ef2194 in android::PoolThread::threadLoop (this=0xb7c4a6e8) at vendor/htc/native/libs/binder/ProcessState.cpp:65
+#9  0xb6ec5aee in android::Thread::_threadLoop (user=0xb7c4a6e8) at system/core/libutils/Threads.cpp:758
+#10 0xb6dfa100 in __pthread_start (arg=0xb66f0930, arg@entry=<error reading variable: value has been optimized out>) at bionic/libc/bionic/pthread_create.cpp:199
+#11 0xb6dd10d4 in __start_thread (fn=<optimized out>, arg=<optimized out>) at bionic/libc/bionic/clone.cpp:41
+#12 0x00000000 in ?? ()
+
+
+(gdb) bt
+#0  android::MessageQueue::invalidate (this=<optimized out>) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:163
+#1  0xb6f393e4 in setTransactionFlags (this=0xb7c48df0, flags=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:2134
+#2  android::SurfaceFlinger::setTransactionState (this=0xb7c48df0, state=..., displays=..., flags=0) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:2195
+#3  0xb6f39db4 in android::SurfaceFlinger::onInitializeDisplays (this=0xb7c48df0) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:2457
+#4  0xb6f3d96a in android::SurfaceFlinger::initializeDisplays()::MessageScreenInitialized::handler() (this=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:2471
+#5  0xb6f33222 in android::MessageBase::handleMessage (this=0xb7d4d378) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:46
+#6  0xb6ec8c92 in android::Looper::pollInner (this=this@entry=0xb7c4a350, timeoutMillis=<optimized out>, timeoutMillis@entry=-1) at system/core/libutils/Looper.cpp:334
+#7  0xb6ec8dd2 in android::Looper::pollOnce (this=0xb7c4a350, timeoutMillis=-1, outFd=0x0, outEvents=0x0, outData=0x0) at system/core/libutils/Looper.cpp:216
+#8  0xb6f335b0 in pollOnce (this=0xb7c4f648, timeoutMillis=-1) at system/core/include/utils/Looper.h:265
+#9  android::MessageQueue::waitMessage (this=0xb7c48f9c) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:115
+#10 0xb6f35f80 in waitForEvent (this=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:769
+#11 android::SurfaceFlinger::run (this=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:801
+#12 0xb6fafefc in main () at frameworks/native/services/surfaceflinger/main_surfaceflinger.cpp:52
+
+
+
+
+
+(gdb) bt
+#0  android::MessageQueue::invalidate (this=<optimized out>) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:163
+#1  0xb6f77f48 in android::Layer::latchBuffer (this=0xb8623a00, recomputeVisibleRegions=@0xbeafc7ef: true) at frameworks/native/services/surfaceflinger/Layer.cpp:1383
+#2  0xb6f7ca68 in android::SurfaceFlinger::handlePageFlip (this=0xb84e3df0) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:1859
+#3  0xb6f7c552 in android::SurfaceFlinger::handleMessageInvalidate (this=0xb84e3df0) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:936
+#4  0xb6f7c478 in android::SurfaceFlinger::onMessageReceived (this=0xb84e3df0, what=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:908
+#5  0xb6f0ec92 in android::Looper::pollInner (this=this@entry=0xb84e5670, timeoutMillis=<optimized out>, timeoutMillis@entry=-1) at system/core/libutils/Looper.cpp:334
+#6  0xb6f0edd2 in android::Looper::pollOnce (this=0xb84e5670, timeoutMillis=-1, outFd=0x0, outEvents=0x0, outData=0x0) at system/core/libutils/Looper.cpp:216
+#7  0xb6f795b0 in pollOnce (this=0xb84ea658, timeoutMillis=-1) at system/core/include/utils/Looper.h:265
+#8  android::MessageQueue::waitMessage (this=0xb84e3f9c) at frameworks/native/services/surfaceflinger/MessageQueue.cpp:115
+#9  0xb6f7bf80 in waitForEvent (this=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:769
+#10 android::SurfaceFlinger::run (this=<optimized out>) at frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp:801
+#11 0xb6ff5efc in main () at frameworks/native/services/surfaceflinger/main_surfaceflinger.cpp:52
+
+
+
+
+
+
+
+
+
+
+
+
+

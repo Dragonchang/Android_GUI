@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="12.2">
-  <zoom_level>10</zoom_level>
+  <zoom_level>6</zoom_level>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>60</x>
-      <y>80</y>
-      <w>140</w>
-      <h>30</h>
+      <x>450</x>
+      <y>48</y>
+      <w>84</w>
+      <h>18</h>
     </coordinates>
     <panel_attributes>Main_surfaceFlinger
 bg=orange</panel_attributes>
@@ -16,10 +16,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>300</x>
-      <y>80</y>
-      <w>110</w>
-      <h>30</h>
+      <x>594</x>
+      <y>48</y>
+      <w>66</w>
+      <h>18</h>
     </coordinates>
     <panel_attributes>SurfaceFlinger
 bg=orange</panel_attributes>
@@ -28,21 +28,21 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>90</x>
-      <y>80</y>
-      <w>50</w>
-      <h>90</h>
+      <x>468</x>
+      <y>48</y>
+      <w>30</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;70</additional_attributes>
+    <additional_attributes>18;18;18;42</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>110</x>
-      <y>150</y>
-      <w>20</w>
-      <h>270</h>
+      <x>480</x>
+      <y>90</y>
+      <w>12</w>
+      <h>162</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -50,21 +50,21 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>320</x>
-      <y>80</y>
-      <w>50</w>
-      <h>120</h>
+      <x>606</x>
+      <y>48</y>
+      <w>30</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;100</additional_attributes>
+    <additional_attributes>18;18;18;60</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>340</x>
-      <y>180</y>
-      <w>20</w>
-      <h>70</h>
+      <x>618</x>
+      <y>108</y>
+      <w>12</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -72,34 +72,34 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>100</x>
-      <y>150</y>
-      <w>260</w>
-      <h>70</h>
+      <x>474</x>
+      <y>90</y>
+      <w>156</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
 new SurfaceFlinger</panel_attributes>
-    <additional_attributes>240;50;30;50</additional_attributes>
+    <additional_attributes>144;30;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>330</x>
-      <y>190</y>
-      <w>152</w>
-      <h>140</h>
+      <x>612</x>
+      <y>114</y>
+      <w>90</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 onFirstRef</panel_attributes>
-    <additional_attributes>30;120;100;120;100;30;30;30</additional_attributes>
+    <additional_attributes>18;72;60;72;60;18;18;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>340</x>
-      <y>280</y>
-      <w>20</w>
-      <h>140</h>
+      <x>618</x>
+      <y>168</y>
+      <w>12</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -107,21 +107,21 @@ onFirstRef</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>320</x>
-      <y>220</y>
-      <w>50</w>
-      <h>80</h>
+      <x>606</x>
+      <y>132</y>
+      <w>30</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;60</additional_attributes>
+    <additional_attributes>18;18;18;36</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>500</x>
-      <y>80</y>
-      <w>100</w>
-      <h>30</h>
+      <x>714</x>
+      <y>48</y>
+      <w>60</w>
+      <h>18</h>
     </coordinates>
     <panel_attributes>MessageQueue
 bg=orange</panel_attributes>
@@ -130,21 +130,21 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>520</x>
-      <y>80</y>
-      <w>50</w>
-      <h>260</h>
+      <x>726</x>
+      <y>48</y>
+      <w>30</w>
+      <h>156</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;240</additional_attributes>
+    <additional_attributes>18;18;18;144</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>540</x>
-      <y>320</y>
-      <w>20</w>
-      <h>60</h>
+      <x>738</x>
+      <y>192</y>
+      <w>12</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -152,45 +152,45 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>330</x>
-      <y>290</y>
-      <w>230</w>
-      <h>70</h>
+      <x>612</x>
+      <y>174</y>
+      <w>138</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
 init
 </panel_attributes>
-    <additional_attributes>210;50;30;50</additional_attributes>
+    <additional_attributes>126;30;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>330</x>
-      <y>340</y>
-      <w>230</w>
-      <h>50</h>
+      <x>612</x>
+      <y>204</y>
+      <w>138</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;</panel_attributes>
-    <additional_attributes>30;30;210;30</additional_attributes>
+    <additional_attributes>18;18;126;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>320</x>
-      <y>390</y>
-      <w>50</w>
-      <h>90</h>
+      <x>606</x>
+      <y>234</y>
+      <w>30</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;70</additional_attributes>
+    <additional_attributes>18;18;18;42</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>340</x>
-      <y>460</y>
-      <w>20</w>
-      <h>380</h>
+      <x>618</x>
+      <y>276</y>
+      <w>12</w>
+      <h>228</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -198,32 +198,32 @@ init
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>100</x>
-      <y>370</y>
-      <w>260</w>
-      <h>50</h>
+      <x>474</x>
+      <y>222</y>
+      <w>156</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;</panel_attributes>
-    <additional_attributes>30;30;240;30</additional_attributes>
+    <additional_attributes>18;18;144;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>90</x>
-      <y>390</y>
-      <w>50</w>
-      <h>70</h>
+      <x>468</x>
+      <y>234</y>
+      <w>30</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;50;30;30</additional_attributes>
+    <additional_attributes>18;30;18;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>110</x>
-      <y>440</y>
-      <w>20</w>
-      <h>50</h>
+      <x>480</x>
+      <y>264</y>
+      <w>12</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -231,22 +231,22 @@ init
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>100</x>
-      <y>420</y>
-      <w>260</w>
-      <h>70</h>
+      <x>474</x>
+      <y>252</y>
+      <w>156</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
 init</panel_attributes>
-    <additional_attributes>240;50;30;50</additional_attributes>
+    <additional_attributes>144;30;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>700</x>
-      <y>80</y>
-      <w>100</w>
-      <h>30</h>
+      <x>834</x>
+      <y>48</y>
+      <w>60</w>
+      <h>18</h>
     </coordinates>
     <panel_attributes>HWComposer
 bg=orange</panel_attributes>
@@ -255,21 +255,21 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>720</x>
-      <y>80</y>
-      <w>50</w>
-      <h>420</h>
+      <x>846</x>
+      <y>48</y>
+      <w>30</w>
+      <h>252</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;400</additional_attributes>
+    <additional_attributes>18;18;18;240</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>740</x>
-      <y>480</y>
-      <w>20</w>
-      <h>60</h>
+      <x>858</x>
+      <y>288</y>
+      <w>12</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -277,45 +277,45 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>330</x>
-      <y>450</y>
-      <w>430</w>
-      <h>70</h>
+      <x>612</x>
+      <y>270</y>
+      <w>258</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
 new HWComposer</panel_attributes>
-    <additional_attributes>410;50;30;50</additional_attributes>
+    <additional_attributes>246;30;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>730</x>
-      <y>480</y>
-      <w>178</w>
-      <h>140</h>
+      <x>852</x>
+      <y>288</y>
+      <w>104</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 loadFbHalModule</panel_attributes>
-    <additional_attributes>30;120;100;120;100;30;30;30</additional_attributes>
+    <additional_attributes>18;72;60;72;60;18;18;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>720</x>
-      <y>510</y>
-      <w>50</w>
-      <h>80</h>
+      <x>846</x>
+      <y>306</y>
+      <w>30</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;60</additional_attributes>
+    <additional_attributes>18;18;18;36</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>740</x>
-      <y>570</y>
-      <w>20</w>
-      <h>60</h>
+      <x>858</x>
+      <y>342</y>
+      <w>12</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -323,22 +323,22 @@ loadFbHalModule</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>730</x>
-      <y>590</y>
-      <w>170</w>
-      <h>140</h>
+      <x>852</x>
+      <y>354</y>
+      <w>104</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 loadHwcModule</panel_attributes>
-    <additional_attributes>30;120;100;120;100;30;30;30</additional_attributes>
+    <additional_attributes>18;72;60;72;60;18;18;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>740</x>
-      <y>680</y>
-      <w>20</w>
-      <h>140</h>
+      <x>858</x>
+      <y>408</y>
+      <w>12</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -346,21 +346,21 @@ loadHwcModule</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>720</x>
-      <y>600</y>
-      <w>50</w>
-      <h>100</h>
+      <x>846</x>
+      <y>360</y>
+      <w>30</w>
+      <h>60</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
+    <additional_attributes>18;18;18;48</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>900</x>
-      <y>80</y>
-      <w>160</w>
-      <h>30</h>
+      <x>954</x>
+      <y>48</y>
+      <w>96</w>
+      <h>18</h>
     </coordinates>
     <panel_attributes>hwc_composer_device_1
 bg=orange</panel_attributes>
@@ -369,21 +369,21 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>950</x>
-      <y>80</y>
-      <w>50</w>
-      <h>660</h>
+      <x>984</x>
+      <y>48</y>
+      <w>30</w>
+      <h>396</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;640</additional_attributes>
+    <additional_attributes>18;18;18;384</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>970</x>
-      <y>720</y>
-      <w>20</w>
-      <h>80</h>
+      <x>996</x>
+      <y>432</y>
+      <w>12</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -391,33 +391,33 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>730</x>
-      <y>690</y>
-      <w>260</w>
-      <h>70</h>
+      <x>852</x>
+      <y>414</y>
+      <w>156</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
 registerProcs</panel_attributes>
-    <additional_attributes>240;50;30;50</additional_attributes>
+    <additional_attributes>144;30;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>730</x>
-      <y>760</y>
-      <w>260</w>
-      <h>50</h>
+      <x>852</x>
+      <y>456</y>
+      <w>156</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;</panel_attributes>
-    <additional_attributes>30;30;240;30</additional_attributes>
+    <additional_attributes>18;18;144;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1090</x>
-      <y>80</y>
-      <w>120</w>
-      <h>30</h>
+      <x>1068</x>
+      <y>48</y>
+      <w>72</w>
+      <h>18</h>
     </coordinates>
     <panel_attributes>DispSyncSource
 bg=orange</panel_attributes>
@@ -426,10 +426,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1250</x>
-      <y>80</y>
-      <w>100</w>
-      <h>30</h>
+      <x>1164</x>
+      <y>48</y>
+      <w>60</w>
+      <h>18</h>
     </coordinates>
     <panel_attributes>EventThread
 bg=orange</panel_attributes>
@@ -438,32 +438,32 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1120</x>
-      <y>80</y>
-      <w>50</w>
-      <h>760</h>
+      <x>1086</x>
+      <y>48</y>
+      <w>30</w>
+      <h>456</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;740</additional_attributes>
+    <additional_attributes>18;18;18;444</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1270</x>
-      <y>80</y>
-      <w>50</w>
-      <h>870</h>
+      <x>1176</x>
+      <y>48</y>
+      <w>30</w>
+      <h>522</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;850</additional_attributes>
+    <additional_attributes>18;18;18;510</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>1140</x>
-      <y>820</y>
-      <w>20</w>
-      <h>120</h>
+      <x>1098</x>
+      <y>492</y>
+      <w>12</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -471,21 +471,21 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>330</x>
-      <y>780</y>
-      <w>430</w>
-      <h>50</h>
+      <x>612</x>
+      <y>468</y>
+      <w>258</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;</panel_attributes>
-    <additional_attributes>30;30;410;30</additional_attributes>
+    <additional_attributes>18;18;246;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>340</x>
-      <y>860</y>
-      <w>20</w>
-      <h>90</h>
+      <x>618</x>
+      <y>516</y>
+      <w>12</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -493,55 +493,55 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>320</x>
-      <y>810</y>
-      <w>50</w>
-      <h>70</h>
+      <x>606</x>
+      <y>486</y>
+      <w>30</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;50</additional_attributes>
+    <additional_attributes>18;18;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>330</x>
-      <y>840</y>
-      <w>830</w>
-      <h>70</h>
+      <x>612</x>
+      <y>504</y>
+      <w>498</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
 new DispSyncSource</panel_attributes>
-    <additional_attributes>810;50;30;50</additional_attributes>
+    <additional_attributes>486;30;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>330</x>
-      <y>900</y>
-      <w>830</w>
-      <h>50</h>
+      <x>612</x>
+      <y>540</y>
+      <w>498</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;</panel_attributes>
-    <additional_attributes>30;30;810;30</additional_attributes>
+    <additional_attributes>18;18;486;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>320</x>
-      <y>920</y>
-      <w>50</w>
-      <h>80</h>
+      <x>606</x>
+      <y>552</y>
+      <w>30</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;60</additional_attributes>
+    <additional_attributes>18;18;18;36</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>340</x>
-      <y>980</y>
-      <w>20</w>
-      <h>120</h>
+      <x>618</x>
+      <y>588</y>
+      <w>12</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -549,22 +549,22 @@ new DispSyncSource</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>330</x>
-      <y>930</y>
-      <w>980</w>
-      <h>70</h>
+      <x>612</x>
+      <y>558</y>
+      <w>588</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
 new EventThread</panel_attributes>
-    <additional_attributes>960;50;30;50</additional_attributes>
+    <additional_attributes>576;30;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>1290</x>
-      <y>930</y>
-      <w>20</w>
-      <h>80</h>
+      <x>1188</x>
+      <y>558</y>
+      <w>12</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -572,21 +572,21 @@ new EventThread</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>330</x>
-      <y>1060</y>
-      <w>980</w>
-      <h>50</h>
+      <x>612</x>
+      <y>636</y>
+      <w>588</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;</panel_attributes>
-    <additional_attributes>30;30;960;30</additional_attributes>
+    <additional_attributes>18;18;576;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>1290</x>
-      <y>1040</y>
-      <w>20</w>
-      <h>60</h>
+      <x>1188</x>
+      <y>624</y>
+      <w>12</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -594,34 +594,34 @@ new EventThread</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1270</x>
-      <y>980</y>
-      <w>50</w>
-      <h>80</h>
+      <x>1176</x>
+      <y>588</y>
+      <w>30</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;60</additional_attributes>
+    <additional_attributes>18;18;18;36</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1280</x>
-      <y>960</y>
-      <w>152</w>
-      <h>130</h>
+      <x>1182</x>
+      <y>576</y>
+      <w>90</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 onFirstRef
 run</panel_attributes>
-    <additional_attributes>30;110;100;110;100;30;30;30</additional_attributes>
+    <additional_attributes>18;66;60;66;60;18;18;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.InteractionFrame</type>
     <coordinates>
-      <x>0</x>
+      <x>414</x>
       <y>0</y>
-      <w>1830</w>
-      <h>1980</h>
+      <w>1098</w>
+      <h>1188</h>
     </coordinates>
     <panel_attributes>surfaceFlingstart
 </panel_attributes>
@@ -630,21 +630,21 @@ run</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>520</x>
-      <y>350</y>
-      <w>50</w>
-      <h>820</h>
+      <x>726</x>
+      <y>210</y>
+      <w>30</w>
+      <h>492</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;800</additional_attributes>
+    <additional_attributes>18;18;18;480</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>540</x>
-      <y>1150</y>
-      <w>20</w>
-      <h>420</h>
+      <x>738</x>
+      <y>690</y>
+      <w>12</w>
+      <h>252</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -652,21 +652,21 @@ run</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>320</x>
-      <y>1070</y>
-      <w>50</w>
-      <h>80</h>
+      <x>606</x>
+      <y>642</y>
+      <w>30</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;60</additional_attributes>
+    <additional_attributes>18;18;18;36</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>340</x>
-      <y>1130</y>
-      <w>20</w>
-      <h>450</h>
+      <x>618</x>
+      <y>678</y>
+      <w>12</w>
+      <h>270</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -674,33 +674,33 @@ run</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>330</x>
-      <y>1120</y>
-      <w>230</w>
-      <h>70</h>
+      <x>612</x>
+      <y>672</y>
+      <w>138</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
 setEventThread</panel_attributes>
-    <additional_attributes>210;50;30;50</additional_attributes>
+    <additional_attributes>126;30;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1270</x>
-      <y>1070</y>
-      <w>50</w>
-      <h>110</h>
+      <x>1176</x>
+      <y>642</y>
+      <w>30</w>
+      <h>66</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;90</additional_attributes>
+    <additional_attributes>18;18;18;54</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>1290</x>
-      <y>1160</y>
-      <w>20</w>
-      <h>70</h>
+      <x>1188</x>
+      <y>696</y>
+      <w>12</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -708,22 +708,22 @@ setEventThread</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>530</x>
-      <y>1150</y>
-      <w>780</w>
-      <h>70</h>
+      <x>732</x>
+      <y>690</y>
+      <w>468</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
 createEventConnection</panel_attributes>
-    <additional_attributes>760;50;30;50</additional_attributes>
+    <additional_attributes>456;30;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1390</x>
-      <y>80</y>
-      <w>170</w>
-      <h>30</h>
+      <x>1248</x>
+      <y>48</y>
+      <w>102</w>
+      <h>18</h>
     </coordinates>
     <panel_attributes>EventThread::Connection
 bg=orange</panel_attributes>
@@ -732,21 +732,21 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1440</x>
-      <y>80</y>
-      <w>50</w>
-      <h>1130</h>
+      <x>1278</x>
+      <y>48</y>
+      <w>30</w>
+      <h>678</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;1110</additional_attributes>
+    <additional_attributes>18;18;18;666</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>1460</x>
-      <y>1190</y>
-      <w>20</w>
-      <h>180</h>
+      <x>1290</x>
+      <y>714</y>
+      <w>12</w>
+      <h>108</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -754,22 +754,22 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1280</x>
-      <y>1160</y>
-      <w>200</w>
-      <h>70</h>
+      <x>1182</x>
+      <y>696</y>
+      <w>120</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
 new Connection</panel_attributes>
-    <additional_attributes>180;50;30;50</additional_attributes>
+    <additional_attributes>108;30;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1610</x>
-      <y>80</y>
-      <w>130</w>
-      <h>30</h>
+      <x>1380</x>
+      <y>48</y>
+      <w>78</w>
+      <h>18</h>
     </coordinates>
     <panel_attributes>BitTube
 bg=orange</panel_attributes>
@@ -778,21 +778,21 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1640</x>
-      <y>80</y>
-      <w>50</w>
-      <h>1160</h>
+      <x>1398</x>
+      <y>48</y>
+      <w>30</w>
+      <h>696</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;1140</additional_attributes>
+    <additional_attributes>18;18;18;684</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>1660</x>
-      <y>1220</y>
-      <w>20</w>
-      <h>60</h>
+      <x>1410</x>
+      <y>732</y>
+      <w>12</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -800,33 +800,33 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1450</x>
-      <y>1190</y>
-      <w>230</w>
-      <h>70</h>
+      <x>1284</x>
+      <y>714</y>
+      <w>138</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
 new BitTube</panel_attributes>
-    <additional_attributes>210;50;30;50</additional_attributes>
+    <additional_attributes>126;30;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1640</x>
-      <y>1250</y>
-      <w>50</w>
-      <h>80</h>
+      <x>1398</x>
+      <y>750</y>
+      <w>30</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;60</additional_attributes>
+    <additional_attributes>18;18;18;36</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>1660</x>
-      <y>1310</y>
-      <w>20</w>
-      <h>60</h>
+      <x>1410</x>
+      <y>786</y>
+      <w>12</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -834,78 +834,44 @@ new BitTube</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1650</x>
-      <y>1220</y>
-      <w>130</w>
-      <h>130</h>
+      <x>1404</x>
+      <y>732</y>
+      <w>82</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 init</panel_attributes>
-    <additional_attributes>30;110;100;110;100;30;30;30</additional_attributes>
+    <additional_attributes>18;66;60;66;60;18;18;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1450</x>
-      <y>1310</y>
-      <w>230</w>
-      <h>50</h>
+      <x>1284</x>
+      <y>786</y>
+      <w>138</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;</panel_attributes>
-    <additional_attributes>30;30;210;30</additional_attributes>
+    <additional_attributes>18;18;126;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1440</x>
-      <y>1340</y>
-      <w>50</w>
-      <h>90</h>
+      <x>1278</x>
+      <y>804</y>
+      <w>30</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;70</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.SeqObjectActive</type>
-    <coordinates>
-      <x>1460</x>
-      <y>1410</y>
-      <w>20</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>bg=yellow</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1450</x>
-      <y>1340</y>
-      <w>150</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-
-onFirstRef</panel_attributes>
-    <additional_attributes>30;110;100;110;100;30;30;30</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1270</x>
-      <y>1200</y>
-      <w>50</w>
-      <h>260</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;240</additional_attributes>
+    <additional_attributes>18;18;18;42</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
       <x>1290</x>
-      <y>1440</y>
-      <w>20</w>
-      <h>90</h>
+      <y>846</y>
+      <w>12</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -913,55 +879,33 @@ onFirstRef</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1250</x>
-      <y>1420</y>
-      <w>256</w>
-      <h>70</h>
+      <x>1284</x>
+      <y>804</y>
+      <w>90</w>
+      <h>78</h>
     </coordinates>
-    <panel_attributes>lt=&lt;
-registerDisplayEventConnection</panel_attributes>
-    <additional_attributes>60;50;210;50</additional_attributes>
+    <panel_attributes>lt=&lt;-
+onFirstRef</panel_attributes>
+    <additional_attributes>18;66;60;66;60;18;18;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>530</x>
-      <y>1470</y>
-      <w>780</w>
-      <h>50</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;</panel_attributes>
-    <additional_attributes>30;30;760;30</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>330</x>
-      <y>1500</y>
-      <w>230</w>
-      <h>50</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;</panel_attributes>
-    <additional_attributes>30;30;210;30</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>320</x>
-      <y>1550</y>
-      <w>50</w>
-      <h>80</h>
+      <x>1176</x>
+      <y>720</y>
+      <w>30</w>
+      <h>156</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;60</additional_attributes>
+    <additional_attributes>18;18;18;144</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>340</x>
-      <y>1610</y>
-      <w>20</w>
-      <h>50</h>
+      <x>1188</x>
+      <y>864</y>
+      <w>12</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -969,10 +913,66 @@ registerDisplayEventConnection</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>330</x>
-      <y>1600</y>
-      <w>182</w>
-      <h>176</h>
+      <x>1170</x>
+      <y>852</y>
+      <w>148</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+registerDisplayEventConnection</panel_attributes>
+    <additional_attributes>30;30;120;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>732</x>
+      <y>882</y>
+      <w>468</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;</panel_attributes>
+    <additional_attributes>18;18;456;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>612</x>
+      <y>900</y>
+      <w>138</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;</panel_attributes>
+    <additional_attributes>18;18;126;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>606</x>
+      <y>930</y>
+      <w>30</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>18;18;18;36</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.SeqObjectActive</type>
+    <coordinates>
+      <x>618</x>
+      <y>966</y>
+      <w>12</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>612</x>
+      <y>960</y>
+      <w>112</w>
+      <h>104</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 initializeDisplays
@@ -980,26 +980,26 @@ onInitializeDisplays
 setTransactionState
 setTransactionFlags
 signalTransaction</panel_attributes>
-    <additional_attributes>30;140;100;140;100;30;30;30</additional_attributes>
+    <additional_attributes>18;84;60;84;60;18;18;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>320</x>
-      <y>1630</y>
-      <w>50</w>
-      <h>100</h>
+      <x>606</x>
+      <y>978</y>
+      <w>30</w>
+      <h>60</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
+    <additional_attributes>18;18;18;48</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>340</x>
-      <y>1710</y>
-      <w>20</w>
-      <h>50</h>
+      <x>618</x>
+      <y>1026</y>
+      <w>12</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -1007,21 +1007,21 @@ signalTransaction</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>320</x>
-      <y>1730</y>
-      <w>50</w>
-      <h>70</h>
+      <x>606</x>
+      <y>1038</y>
+      <w>30</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;50</additional_attributes>
+    <additional_attributes>18;18;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>340</x>
-      <y>1780</y>
-      <w>20</w>
-      <h>170</h>
+      <x>618</x>
+      <y>1068</y>
+      <w>12</w>
+      <h>102</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -1029,21 +1029,21 @@ signalTransaction</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>520</x>
-      <y>1540</y>
-      <w>50</w>
-      <h>270</h>
+      <x>726</x>
+      <y>924</y>
+      <w>30</w>
+      <h>162</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;250</additional_attributes>
+    <additional_attributes>18;18;18;150</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>540</x>
-      <y>1790</y>
-      <w>20</w>
-      <h>130</h>
+      <x>738</x>
+      <y>1074</y>
+      <w>12</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -1051,67 +1051,33 @@ signalTransaction</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>330</x>
-      <y>1760</y>
-      <w>230</w>
-      <h>70</h>
+      <x>612</x>
+      <y>1056</y>
+      <w>138</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
 invalidate</panel_attributes>
-    <additional_attributes>210;50;30;50</additional_attributes>
+    <additional_attributes>126;30;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1440</x>
-      <y>1450</y>
-      <w>40</w>
-      <h>320</h>
+      <x>1278</x>
+      <y>870</y>
+      <w>30</w>
+      <h>198</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;310</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.SeqObjectActive</type>
-    <coordinates>
-      <x>1460</x>
-      <y>1760</y>
-      <w>20</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes>bg=yellow</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>530</x>
-      <y>1780</y>
-      <w>950</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;
-requestNextVsync</panel_attributes>
-    <additional_attributes>930;50;30;50</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1270</x>
-      <y>1500</y>
-      <w>50</w>
-      <h>360</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;340</additional_attributes>
+    <additional_attributes>18;18;18;186</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
       <x>1290</x>
-      <y>1840</y>
-      <w>20</w>
-      <h>70</h>
+      <y>1056</y>
+      <w>12</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>bg=yellow</panel_attributes>
     <additional_attributes/>
@@ -1119,44 +1085,78 @@ requestNextVsync</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1280</x>
-      <y>1820</y>
-      <w>200</w>
-      <h>70</h>
+      <x>732</x>
+      <y>1068</y>
+      <w>570</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
 requestNextVsync</panel_attributes>
-    <additional_attributes>30;50;180;50</additional_attributes>
+    <additional_attributes>558;30;18;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>530</x>
-      <y>1860</y>
-      <w>780</w>
-      <h>50</h>
+      <x>1176</x>
+      <y>900</y>
+      <w>30</w>
+      <h>216</h>
     </coordinates>
-    <panel_attributes>lt=&lt;</panel_attributes>
-    <additional_attributes>30;30;760;30</additional_attributes>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>18;18;18;204</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.SeqObjectActive</type>
+    <coordinates>
+      <x>1188</x>
+      <y>1104</y>
+      <w>12</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>bg=yellow</panel_attributes>
+    <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>330</x>
-      <y>1870</y>
-      <w>230</w>
-      <h>50</h>
+      <x>1182</x>
+      <y>1092</y>
+      <w>120</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+requestNextVsync</panel_attributes>
+    <additional_attributes>18;30;108;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>732</x>
+      <y>1116</y>
+      <w>468</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;</panel_attributes>
-    <additional_attributes>30;30;210;30</additional_attributes>
+    <additional_attributes>18;18;456;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>612</x>
+      <y>1122</y>
+      <w>138</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;</panel_attributes>
+    <additional_attributes>18;18;126;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>2290</y>
-      <w>360</w>
-      <h>480</h>
+      <x>444</x>
+      <y>1374</y>
+      <w>216</w>
+      <h>288</h>
     </coordinates>
     <panel_attributes>DispSync
 --
@@ -1194,10 +1194,10 @@ bg=yellow
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>470</x>
-      <y>2290</y>
-      <w>280</w>
-      <h>220</h>
+      <x>696</x>
+      <y>1374</y>
+      <w>168</w>
+      <h>132</h>
     </coordinates>
     <panel_attributes>DispSyncThread
 --
@@ -1218,10 +1218,10 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>470</x>
-      <y>2120</y>
-      <w>280</w>
-      <h>70</h>
+      <x>696</x>
+      <y>1272</y>
+      <w>168</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>Thread
 --
@@ -1234,34 +1234,337 @@ bg=yellow
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>380</x>
-      <y>2300</y>
-      <w>110</w>
-      <h>50</h>
+      <x>642</x>
+      <y>1380</y>
+      <w>66</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>30;30;90;30</additional_attributes>
+    <additional_attributes>18;18;54;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>580</x>
-      <y>2160</y>
-      <w>50</w>
-      <h>150</h>
+      <x>762</x>
+      <y>1296</y>
+      <w>30</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>30;130;30;30</additional_attributes>
+    <additional_attributes>18;78;18;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Note</type>
     <coordinates>
-      <x>40</x>
-      <y>2070</y>
-      <w>730</w>
-      <h>710</h>
+      <x>0</x>
+      <y>1242</y>
+      <w>1704</w>
+      <h>510</h>
     </coordinates>
     <panel_attributes>DispSync线程</panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>906</x>
+      <y>1392</y>
+      <w>144</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>EventListener
+--
+nsecs_t mPhase;
+nsecs_t mLastEventTime
+sp&lt;DispSync::Callback&gt; mCallback
+bg=yellow
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>846</x>
+      <y>1404</y>
+      <w>72</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>18;18;60;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1086</x>
+      <y>1392</y>
+      <w>144</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>DispSync::Callback
+--
+void onDispSyncEvent
+bg=yellow
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1032</x>
+      <y>1404</y>
+      <w>66</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>18;18;54;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1272</x>
+      <y>1392</y>
+      <w>186</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>VSyncSource
+--
+void setVSyncEnabled(bool enable)
+void setCallback(const sp&lt;Callback&gt;&amp; callback)
+void setPhaseOffset(nsecs_t phaseOffset)
+bg=yellow
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1236</x>
+      <y>1470</y>
+      <w>30</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>18;42;18;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1134</x>
+      <y>1470</y>
+      <w>246</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>18;18;234;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1134</x>
+      <y>1440</y>
+      <w>30</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>18;48;18;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1350</x>
+      <y>1440</y>
+      <w>30</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>18;48;18;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1128</x>
+      <y>1512</y>
+      <w>270</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>DispSyncSource
+--
+DispSync* mDispSync;
+sp&lt;VSyncSource::Callback&gt; mCallback;
+--
+void onDispSyncEvent
+setVSyncEnabled(bool enable)
+void setCallback(const sp&lt;VSyncSource::Callback&gt;&amp; callback)
+void setPhaseOffset(nsecs_t phaseOffset)
+bg=yellow
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>642</x>
+      <y>1536</y>
+      <w>498</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>486;18;18;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1428</x>
+      <y>1512</y>
+      <w>144</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>VSyncSource::Callback
+--
+void onVSyncEvent(nsecs_t when)
+bg=yellow
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1380</x>
+      <y>1536</y>
+      <w>60</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>18;18;48;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1482</x>
+      <y>1560</y>
+      <w>30</w>
+      <h>78</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>18;66;18;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1428</x>
+      <y>1626</y>
+      <w>144</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>EventThread
+--
+sp&lt;VSyncSource&gt; mVSyncSource;
+--
+void onVSyncEvent(nsecs_t when)
+bg=yellow
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1380</x>
+      <y>1638</y>
+      <w>60</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>48;18;18;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>24</x>
+      <y>1446</y>
+      <w>156</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>HWComposer
+--
+void vsync(int disp, int64_t timestamp)
+bg=yellow
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>216</x>
+      <y>1446</y>
+      <w>204</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>EventHandler
+--
+void onVSyncReceived(int disp, nsecs_t timestamp)
+void onHotplugReceived(int disp, bool connected)
+bg=yellow
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>162</x>
+      <y>1446</y>
+      <w>66</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>18;18;54;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>288</x>
+      <y>1470</y>
+      <w>30</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>18;54;18;18</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>210</x>
+      <y>1524</y>
+      <w>210</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>SurfaceFlinger
+--
+DispSync mPrimaryDispSync;
+--
+void onVSyncReceived(int disp, nsecs_t timestamp)
+void onHotplugReceived(int disp, bool connected)
+bg=yellow
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>402</x>
+      <y>1542</y>
+      <w>54</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>42;18;18;18</additional_attributes>
   </element>
 </diagram>
