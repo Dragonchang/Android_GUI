@@ -1,0 +1,124 @@
+From 7d4b3191b0b180aafa1c056086b0c7f7dab8a7bb Mon Sep 17 00:00:00 2001
+
+---
+ .../java/com/android/server/wm/InputMonitor.java   | 12 ++++--
+ .../java/com/android/server/wm/WindowState.java    | 43 ++++++++++++++++++++++
+ .../android/server/wm/WindowSurfaceController.java |  4 ++
+ 3 files changed, 55 insertions(+), 4 deletions(-)
+
+diff --git a/services/core/java/com/android/server/wm/InputMonitor.java b/services/core/java/com/android/server/wm/InputMonitor.java
+index b9b71c2..895493e 100644
+--- a/services/core/java/com/android/server/wm/InputMonitor.java
++++ b/services/core/java/com/android/server/wm/InputMonitor.java
+@@ -326,10 +326,14 @@ final class InputMonitor implements InputManagerService.WindowManagerCallbacks {
+         inputWindowHandle.inputFeatures = child.mAttrs.inputFeatures;
+ 
+         final Rect frame = child.mFrame;
+-        inputWindowHandle.frameLeft = frame.left;
+-        inputWindowHandle.frameTop = frame.top;
+-        inputWindowHandle.frameRight = frame.right;
+-        inputWindowHandle.frameBottom = frame.bottom;
++        //++[Feature]Center small aspect ratio apps in display
++        inputWindowHandle.frameLeft = frame.left + child.mShiftX;
++        inputWindowHandle.frameTop = frame.top + child.mShiftY;
++        inputWindowHandle.frameRight = frame.right + child.mShiftX;
++        inputWindowHandle.frameBottom = frame.bottom + child.mShiftY;
++        inputWindowHandle.shiftX = child.mShiftX;
++        inputWindowHandle.shiftY = child.mShiftY;
++        //--[Feature]Center small aspect ratio apps in display
+ 
+         if (child.mGlobalScale != 1) {
+             // If we are scaling the window, input coordinates need
+diff --git a/services/core/java/com/android/server/wm/WindowState.java b/services/core/java/com/android/server/wm/WindowState.java
+index 9d9d574..780b6b0 100644
+--- a/services/core/java/com/android/server/wm/WindowState.java
++++ b/services/core/java/com/android/server/wm/WindowState.java
+@@ -409,6 +409,12 @@ class WindowState extends WindowContainer<WindowState> implements WindowManagerP
+     int mXOffset;
+     int mYOffset;
+ 
++    //++[Feature]Center small aspect ratio apps in display
++    // Pixel based.
++    int mShiftX;
++    int mShiftY;
++    //--[Feature]Center small aspect ratio apps in display
++
+     /**
+      * This is set after IWindowSession.relayout() has been called at
+      * least once for the window.  It allows us to detect the situation
+@@ -979,6 +985,34 @@ class WindowState extends WindowContainer<WindowState> implements WindowManagerP
+             }
+         }
+ 
++        //++[Feature] Center small aspect ratio apps in display
++        mShiftX = 0;
++        mShiftY = 0;
++        if (mAppToken != null && mAppToken.hasBounds() && !isInMultiWindowMode()) {
++            if (mIsChildWindow) {
++                final WindowState parentWindow = getParentWindow();
++                mShiftX = parentWindow.mShiftX;
++                mShiftY = parentWindow.mShiftY;
++            } else {
++                final int flags = com.android.server.policy.PolicyControl.getWindowFlags(this, mAttrs);
++                final int vis = com.android.server.policy.PolicyControl.getSystemUiVisibility(this, mAttrs);
++                final boolean forceStatus = (flags & WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN) != 0;
++                final boolean hideStatus = (vis & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0
++                        || (flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
++                final boolean hideNavigation = (vis & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0;
++                if (!forceStatus && hideStatus && hideNavigation
++                        && mAttrs.width == MATCH_PARENT && mAttrs.height == MATCH_PARENT) {
++                    final int displayWidth = dc.getDisplayInfo().logicalWidth;
++                    final int displayHeight = dc.getDisplayInfo().logicalHeight;
++                    final int newX = (displayWidth - mFrame.width()) / 2;
++                    final int newY = (displayHeight - mFrame.height()) / 2;
++                    mShiftX = newX - mFrame.left;
++                    mShiftY = newY - mFrame.top;
++                }
++            }
++        }
++        //--[Feature]Center small aspect ratio apps in display
++
+         if (DEBUG_LAYOUT || localLOGV) Slog.v(TAG,
+                 "Resolving (mRequestedWidth="
+                 + mRequestedWidth + ", mRequestedheight="
+@@ -3007,6 +3041,9 @@ class WindowState extends WindowContainer<WindowState> implements WindowManagerP
+             }
+         }
+         cropRegionToStackBoundsIfNeeded(outRegion);
++        //++[Feature]Center small aspect ratio apps in display
++        outRegion.translate(mShiftX, mShiftY);
++        //--[Feature]Center small aspect ratio apps in display
+     }
+ 
+     private void cropRegionToStackBoundsIfNeeded(Region region) {
+@@ -3416,6 +3453,12 @@ class WindowState extends WindowContainer<WindowState> implements WindowManagerP
+             pw.print(prefix); pw.print("Offsets x="); pw.print(mXOffset);
+                     pw.print(" y="); pw.println(mYOffset);
+         }
++        //++[Feature]Center small aspect ratio apps in display
++        if (mShiftX != 0 || mShiftY != 0) {
++            pw.print(prefix); pw.print("Shift x="); pw.print(mShiftX);
++                    pw.print(" y="); pw.println(mShiftY);
++        }
++        //--[Feature]Center small aspect ratio apps in display
+         if (dumpAll) {
+             pw.print(prefix); pw.print("mGivenContentInsets=");
+                     mGivenContentInsets.printShortString(pw);
+diff --git a/services/core/java/com/android/server/wm/WindowSurfaceController.java b/services/core/java/com/android/server/wm/WindowSurfaceController.java
+index 9bc4d86..3f8c2b2 100644
+--- a/services/core/java/com/android/server/wm/WindowSurfaceController.java
++++ b/services/core/java/com/android/server/wm/WindowSurfaceController.java
+@@ -280,6 +280,10 @@ class WindowSurfaceController {
+     }
+ 
+     void setPositionInTransaction(float left, float top, boolean recoveringMemory) {
++        //++[Feature]Center small aspect ratio apps in display
++        left += mAnimator.mWin.mShiftX;
++        top += mAnimator.mWin.mShiftY;
++        //--[Feature]Center small aspect ratio apps in display
+         final boolean surfaceMoved = mSurfaceX != left || mSurfaceY != top;
+         if (surfaceMoved) {
+             mSurfaceX = left;
+-- 
+1.9.1
+

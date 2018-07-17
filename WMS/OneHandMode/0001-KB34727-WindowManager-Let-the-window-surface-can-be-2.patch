@@ -1,0 +1,26 @@
+From 3cb2cbb7c334141e44d98b34d139ffb2269df36a Mon Sep 17 00:00:00 2001
+
+---
+ services/core/java/com/android/server/wm/WindowState.java | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/services/core/java/com/android/server/wm/WindowState.java b/services/core/java/com/android/server/wm/WindowState.java
+index 6013fef..ea11f01 100644
+--- a/services/core/java/com/android/server/wm/WindowState.java
++++ b/services/core/java/com/android/server/wm/WindowState.java
+@@ -2236,6 +2236,12 @@ class WindowState extends WindowContainer<WindowState> implements WindowManagerP
+             }
+             region.set(mTmpRect);
+             cropRegionToStackBoundsIfNeeded(region);
++            //++[Feature]Let the window surface can be projected
++            if (canBeProjected()) {
++                region.scale(mService.mProjectionScale);
++                region.translate((int) mService.mProjectionX, (int) mService.mProjectionY);
++            }
++            //--[Feature]Let the window surface can be projected
+         } else {
+             // Not modal or full screen modal
+             getTouchableRegion(region);
+-- 
+1.9.1
+

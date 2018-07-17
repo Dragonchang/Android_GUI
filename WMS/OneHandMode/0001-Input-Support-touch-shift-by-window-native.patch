@@ -1,0 +1,136 @@
+From 45cb95739538474b95bc8ccba82c703954e96302 Mon Sep 17 00:00:00 2001
+Subject: [PATCH] [Input] Support touch shift by window
+
+---
+ services/inputflinger/InputDispatcher.cpp | 35 +++++++++++++++++++++++++++++--
+ services/inputflinger/InputDispatcher.h   |  9 ++++++++
+ services/inputflinger/InputWindow.h       |  5 +++++
+ 3 files changed, 47 insertions(+), 2 deletions(-)
+
+diff --git a/services/inputflinger/InputDispatcher.cpp b/services/inputflinger/InputDispatcher.cpp
+index 86cb4d9..127519d 100644
+--- a/services/inputflinger/InputDispatcher.cpp
++++ b/services/inputflinger/InputDispatcher.cpp
+@@ -1753,6 +1753,12 @@ void InputDispatcher::addWindowTargetLocked(const sp<InputWindowHandle>& windowH
+     target.yOffset = - windowInfo->frameTop;
+     target.scaleFactor = windowInfo->scaleFactor;
+     target.pointerIds = pointerIds;
++    //++[Feature]Support touch shift by window
++    target.shiftX = windowInfo->shiftX;
++    target.shiftY = windowInfo->shiftY;
++    target.xOffset += windowInfo->shiftX;
++    target.yOffset += windowInfo->shiftY;
++    //--[Feature]Support touch shift by window
+ }
+ 
+ void InputDispatcher::addMonitoringTargetsLocked(Vector<InputTarget>& inputTargets) {
+@@ -1766,6 +1772,10 @@ void InputDispatcher::addMonitoringTargetsLocked(Vector<InputTarget>& inputTarge
+         target.yOffset = 0;
+         target.pointerIds.clear();
+         target.scaleFactor = 1.0f;
++        //++[Feature]Support touch shift by window
++        target.shiftX = 0;
++        target.shiftY = 0;
++        //--[Feature]Support touch shift by window
+     }
+ }
+ 
+@@ -2061,6 +2071,11 @@ void InputDispatcher::enqueueDispatchEntryLocked(
+             inputTargetFlags, inputTarget->xOffset, inputTarget->yOffset,
+             inputTarget->scaleFactor);
+ 
++    //++[Feature]Support touch shift by window
++    dispatchEntry->shiftX = inputTarget->shiftX;
++    dispatchEntry->shiftY = inputTarget->shiftY;
++    //--[Feature]Support touch shift by window
++
+     // Apply target flags and update the connection's input state.
+     switch (eventEntry->type) {
+     case EventEntry::TYPE_KEY: {
+@@ -2192,7 +2207,17 @@ void InputDispatcher::startDispatchCycleLocked(nsecs_t currentTime,
+             MotionEntry* motionEntry = static_cast<MotionEntry*>(eventEntry);
+ 
+             PointerCoords scaledCoords[MAX_POINTERS];
+-            const PointerCoords* usingCoords = motionEntry->pointerCoords;
++
++            //++[Feature]Support touch shift by window
++            PointerCoords shiftCoords[MAX_POINTERS];
++            const PointerCoords* usingCoords = shiftCoords;
++
++            for (uint32_t i = 0; i < motionEntry->pointerCount; i++) {
++                shiftCoords[i] = motionEntry->pointerCoords[i];
++                shiftCoords[i].setAxisValue(AMOTION_EVENT_AXIS_X, motionEntry->pointerCoords[i].getAxisValue(AMOTION_EVENT_AXIS_X) - dispatchEntry->shiftX);
++                shiftCoords[i].setAxisValue(AMOTION_EVENT_AXIS_Y, motionEntry->pointerCoords[i].getAxisValue(AMOTION_EVENT_AXIS_Y) - dispatchEntry->shiftY);
++            }
++            //--[Feature]Support touch shift by window
+ 
+             // Set the X and Y offset depending on the input source.
+             float xOffset, yOffset, scaleFactor;
+@@ -2203,7 +2228,9 @@ void InputDispatcher::startDispatchCycleLocked(nsecs_t currentTime,
+                 yOffset = dispatchEntry->yOffset * scaleFactor;
+                 if (scaleFactor != 1.0f) {
+                     for (uint32_t i = 0; i < motionEntry->pointerCount; i++) {
+-                        scaledCoords[i] = motionEntry->pointerCoords[i];
++                        //++[Feature]Support touch shift by window
++                        scaledCoords[i] = usingCoords[i];
++                        //--[Feature]Support touch shift by window
+                         scaledCoords[i].scale(scaleFactor);
+                     }
+                     usingCoords = scaledCoords;
+@@ -3837,6 +3864,10 @@ void InputDispatcher::dumpDispatchStateLocked(String8& dump) {
+                     windowInfo->frameRight, windowInfo->frameBottom,
+                     windowInfo->scaleFactor);
+             dumpRegion(dump, windowInfo->touchableRegion);
++            //++[Feature]Support touch shift by window
++            dump.appendFormat(", shiftX=%0.3f", windowInfo->shiftX);
++            dump.appendFormat(", shiftY=%0.3f", windowInfo->shiftY);
++            //--[Feature]Support touch shift by window
+             dump.appendFormat(", inputFeatures=0x%08x", windowInfo->inputFeatures);
+             dump.appendFormat(", ownerPid=%d, ownerUid=%d, dispatchingTimeout=%0.3fms\n",
+                     windowInfo->ownerPid, windowInfo->ownerUid,
+diff --git a/services/inputflinger/InputDispatcher.h b/services/inputflinger/InputDispatcher.h
+index a7424c1..389a49e 100644
+--- a/services/inputflinger/InputDispatcher.h
++++ b/services/inputflinger/InputDispatcher.h
+@@ -171,6 +171,10 @@ struct InputTarget {
+     // The subset of pointer ids to include in motion events dispatched to this input target
+     // if FLAG_SPLIT is set.
+     BitSet32 pointerIds;
++
++    //++[Feature]Support touch shift by window
++    float shiftX, shiftY;
++    //--[Feature]Support touch shift by window
+ };
+ 
+ 
+@@ -629,6 +633,11 @@ private:
+         int32_t resolvedAction;
+         int32_t resolvedFlags;
+ 
++        //++[Feature]Support touch shift by window
++        float shiftX;
++        float shiftY;
++        //--[Feature]Support touch shift by window
++
+         DispatchEntry(EventEntry* eventEntry,
+                 int32_t targetFlags, float xOffset, float yOffset, float scaleFactor);
+         ~DispatchEntry();
+diff --git a/services/inputflinger/InputWindow.h b/services/inputflinger/InputWindow.h
+index 73dbe97..48a9442 100644
+--- a/services/inputflinger/InputWindow.h
++++ b/services/inputflinger/InputWindow.h
+@@ -140,6 +140,11 @@ struct InputWindowInfo {
+     int32_t inputFeatures;
+     int32_t displayId;
+ 
++    //++[Feature]Support touch shift by window
++    float shiftX;
++    float shiftY;
++    //--[Feature]Support touch shift by window
++
+     void addTouchableRegion(const Rect& region);
+ 
+     bool touchableRegionContainsPoint(int32_t x, int32_t y) const;
+-- 
+1.9.1
+

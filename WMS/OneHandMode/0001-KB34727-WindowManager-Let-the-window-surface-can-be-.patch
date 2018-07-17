@@ -1,0 +1,342 @@
+From d0767a34f8c792aa954885fc933dd0d0d7072b90 Mon Sep 17 00:00:00 2001
+Let the window surface can be
+ projected
+---
+ core/java/android/view/IWindowManager.aidl         | 12 ++++
+ .../com/android/server/wm/AppWindowAnimator.java   | 12 +++-
+ .../java/com/android/server/wm/DisplayContent.java |  5 ++
+ .../java/com/android/server/wm/InputMonitor.java   | 22 +++++---
+ .../android/server/wm/WindowManagerService.java    | 50 +++++++++++++++++
+ .../java/com/android/server/wm/WindowState.java    | 18 ++++++
+ .../android/server/wm/WindowSurfaceController.java | 65 ++++++++++++++++++++++
+ .../src/android/view/IWindowManagerImpl.java       | 12 ++++
+ 8 files changed, 185 insertions(+), 11 deletions(-)
+
+diff --git a/core/java/android/view/IWindowManager.aidl b/core/java/android/view/IWindowManager.aidl
+index 2197f04..b946ff5 100644
+--- a/core/java/android/view/IWindowManager.aidl
++++ b/core/java/android/view/IWindowManager.aidl
+@@ -274,6 +274,18 @@ interface IWindowManager
+      */
+     oneway void setPipVisibility(boolean visible);
+ 
++    //++[Feature]Let the window surface can be projected
++    /**
++     * Project the display image onto the given location with the given scale.
++     */
++    oneway void setProjection(int x, int y, float scale);
++
++    /**
++     * Update the coordinates of input.
++     */
++    oneway void updateInputForProjection();
++    //--[Feature]Let the window surface can be projected
++
+     /**
+      * Device has a software navigation bar (separate from the status bar).
+      */
+diff --git a/services/core/java/com/android/server/wm/AppWindowAnimator.java b/services/core/java/com/android/server/wm/AppWindowAnimator.java
+index 3246484..bcbee01 100644
+--- a/services/core/java/com/android/server/wm/AppWindowAnimator.java
++++ b/services/core/java/com/android/server/wm/AppWindowAnimator.java
+@@ -275,7 +275,11 @@ public class AppWindowAnimator {
+         if (SHOW_TRANSACTIONS) WindowManagerService.logSurface(thumbnail,
+                 "thumbnail", "POS " + tmpFloats[Matrix.MTRANS_X]
+                 + ", " + tmpFloats[Matrix.MTRANS_Y]);
+-        thumbnail.setPosition(tmpFloats[Matrix.MTRANS_X], tmpFloats[Matrix.MTRANS_Y]);
++        //++[Feature]Let the window surface can be projected
++        final float projectionScale = mService.mProjectionScale;
++        thumbnail.setPosition(tmpFloats[Matrix.MTRANS_X] * projectionScale + mService.mProjectionX,
++                tmpFloats[Matrix.MTRANS_Y] * projectionScale + mService.mProjectionY);
++        //--[Feature]Let the window surface can be projected
+         if (SHOW_TRANSACTIONS) WindowManagerService.logSurface(thumbnail,
+                 "thumbnail", "alpha=" + thumbnailTransformation.getAlpha()
+                 + " layer=" + thumbnailLayer
+@@ -292,8 +296,10 @@ public class AppWindowAnimator {
+             thumbnail.setLayer(thumbnailLayer + WindowManagerService.WINDOW_LAYER_MULTIPLIER
+                     - WindowManagerService.LAYER_OFFSET_THUMBNAIL);
+         }
+-        thumbnail.setMatrix(tmpFloats[Matrix.MSCALE_X], tmpFloats[Matrix.MSKEW_Y],
+-                tmpFloats[Matrix.MSKEW_X], tmpFloats[Matrix.MSCALE_Y]);
++        //++[Feature]Let the window surface can be projected
++        thumbnail.setMatrix(tmpFloats[Matrix.MSCALE_X] * projectionScale, tmpFloats[Matrix.MSKEW_Y] * projectionScale,
++                tmpFloats[Matrix.MSKEW_X] * projectionScale, tmpFloats[Matrix.MSCALE_Y] * projectionScale);
++        //--[Feature]Let the window surface can be projected
+         thumbnail.setWindowCrop(thumbnailTransformation.getClipRect());
+     }
+ 
+diff --git a/services/core/java/com/android/server/wm/DisplayContent.java b/services/core/java/com/android/server/wm/DisplayContent.java
+index ad63648..ea0bee1 100644
+--- a/services/core/java/com/android/server/wm/DisplayContent.java
++++ b/services/core/java/com/android/server/wm/DisplayContent.java
+@@ -3200,6 +3200,11 @@ class DisplayContent extends WindowContainer<DisplayContent.DisplayChildWindowCo
+             SurfaceControl.openTransaction();
+             SurfaceControl.closeTransactionSync();
+ 
++            //++[Feature]Let the window surface can be projected
++            crop.scale(mService.mProjectionScale);
++            crop.offset((int) mService.mProjectionX, (int) mService.mProjectionY);
++            //--[Feature]Let the window surface can be projected
++
+             bitmap = screenshoter.screenshot(crop, width, height, minLayer, maxLayer,
+                     inRotation, rot);
+             if (bitmap == null) {
+diff --git a/services/core/java/com/android/server/wm/InputMonitor.java b/services/core/java/com/android/server/wm/InputMonitor.java
+index 895493e..17cc1fe 100644
+--- a/services/core/java/com/android/server/wm/InputMonitor.java
++++ b/services/core/java/com/android/server/wm/InputMonitor.java
+@@ -326,14 +326,20 @@ final class InputMonitor implements InputManagerService.WindowManagerCallbacks {
+         inputWindowHandle.inputFeatures = child.mAttrs.inputFeatures;
+ 
+         final Rect frame = child.mFrame;
+-        //++[Feature]Center small aspect ratio apps in display
+-        inputWindowHandle.frameLeft = frame.left + child.mShiftX;
+-        inputWindowHandle.frameTop = frame.top + child.mShiftY;
+-        inputWindowHandle.frameRight = frame.right + child.mShiftX;
+-        inputWindowHandle.frameBottom = frame.bottom + child.mShiftY;
+-        inputWindowHandle.shiftX = child.mShiftX;
+-        inputWindowHandle.shiftY = child.mShiftY;
+-        //--[Feature]Center small aspect ratio apps in display
++        inputWindowHandle.frameLeft = frame.left;
++        inputWindowHandle.frameTop = frame.top;
++        inputWindowHandle.frameRight = frame.right;
++        inputWindowHandle.frameBottom = frame.bottom;
++        //++[Feature]Let the window surface can be projected
++        if (child.canBeProjected()) {
++            inputWindowHandle.applyShiftWithScale((int) mService.mProjectionX, (int) mService.mProjectionY,
++                    child.mShiftX, child.mShiftY, mService.mProjectionScale);
++        } else {
++            //++[Feature]Center small aspect ratio apps in display
++            inputWindowHandle.applyShift(child.mShiftX, child.mShiftY);
++            //--[Feature]Center small aspect ratio apps in display
++        }
++        //--[Feature]Let the window surface can be projected
+ 
+         if (child.mGlobalScale != 1) {
+             // If we are scaling the window, input coordinates need
+diff --git a/services/core/java/com/android/server/wm/WindowManagerService.java b/services/core/java/com/android/server/wm/WindowManagerService.java
+index 53ce1fa..1e9bd05 100644
+--- a/services/core/java/com/android/server/wm/WindowManagerService.java
++++ b/services/core/java/com/android/server/wm/WindowManagerService.java
+@@ -6419,6 +6419,51 @@ public class WindowManagerService extends IWindowManager.Stub
+         }
+     }
+ 
++    //++[Feature]Let the window surface can be projected
++    private static final String PROJECTION_PERMISSION = android.Manifest.permission.STATUS_BAR;
++
++    float mProjectionScale = 1f;
++    float mProjectionX = 0;
++    float mProjectionY = 0;
++
++    private void checkProjectionPermission() {
++        if (mContext.checkCallingOrSelfPermission(PROJECTION_PERMISSION)
++                != PackageManager.PERMISSION_GRANTED) {
++            throw new SecurityException("Caller does not hold permission " + PROJECTION_PERMISSION);
++        }
++    }
++
++    @Override
++    public void setProjection(int x, int y, float scale) {
++        checkProjectionPermission();
++        synchronized (mWindowMap) {
++            mProjectionScale = scale;
++            mProjectionX = x;
++            mProjectionY = y;
++            if (SHOW_TRANSACTIONS) Slog.i(TAG, ">>> OPEN TRANSACTION setProjection x=" + x + " y=" + y + " scale" + scale);
++            SurfaceControl.openTransaction();
++            try {
++                getDefaultDisplayContentLocked().forAllWindows(w -> {
++                    if (w.mWinAnimator != null && w.mWinAnimator.mSurfaceController != null) {
++                        w.mWinAnimator.mSurfaceController.updateProjectionInTransaction();
++                    }
++                }, true /* traverseTopToBottom */ );
++            } finally {
++                SurfaceControl.closeTransaction();
++                if (SHOW_TRANSACTIONS) Slog.i(TAG, "<<< CLOSE TRANSACTION setProjection");
++            }
++        }
++    }
++
++    @Override
++    public void updateInputForProjection() {
++        checkProjectionPermission();
++        synchronized (mWindowMap) {
++            mWindowPlacerLocked.requestTraversal();
++        }
++    }
++    //--[Feature]Let the window surface can be projected
++
+     @Override
+     public void setRecentsVisibility(boolean visible) {
+         if (mContext.checkCallingOrSelfPermission(android.Manifest.permission.STATUS_BAR)
+@@ -6861,6 +6906,11 @@ public class WindowManagerService extends IWindowManager.Stub
+             pw.print("  mSkipAppTransitionAnimation=");pw.println(mSkipAppTransitionAnimation);
+             pw.println("  mLayoutToAnim:");
+             mAppTransition.dump(pw, "    ");
++            //++[Feature]Let the window surface can be projected
++            pw.print("  mProjectionScale=");pw.print(mProjectionScale);
++            pw.print(" mProjectionX="); pw.print(mProjectionX);
++            pw.print(" mProjectionY="); pw.println(mProjectionY);
++            //--[Feature]Let the window surface can be projected
+         }
+     }
+ 
+diff --git a/services/core/java/com/android/server/wm/WindowState.java b/services/core/java/com/android/server/wm/WindowState.java
+index 780b6b0..0f60ca1 100644
+--- a/services/core/java/com/android/server/wm/WindowState.java
++++ b/services/core/java/com/android/server/wm/WindowState.java
+@@ -3044,7 +3044,25 @@ class WindowState extends WindowContainer<WindowState> implements WindowManagerP
+         //++[Feature]Center small aspect ratio apps in display
+         outRegion.translate(mShiftX, mShiftY);
+         //--[Feature]Center small aspect ratio apps in display
++
++        //++[Feature]Let the window surface can be projected
++        if (canBeProjected()) {
++            outRegion.scale(mService.mProjectionScale);
++            outRegion.translate((int) mService.mProjectionX, (int) mService.mProjectionY);
++        }
++        //--[Feature]Let the window surface can be projected
++    }
++
++    //++[Feature]Let the window surface can be projected
++    boolean canBeProjected() {
++        switch (mAttrs.type) {
++            case WindowManager.LayoutParams.TYPE_BOOT_PROGRESS:
++            case WindowManager.LayoutParams.TYPE_SECURE_SYSTEM_OVERLAY:
++            return false;
++        }
++        return true;
+     }
++    //--[Feature]Let the window surface can be projected
+ 
+     private void cropRegionToStackBoundsIfNeeded(Region region) {
+         final Task task = getTask();
+diff --git a/services/core/java/com/android/server/wm/WindowSurfaceController.java b/services/core/java/com/android/server/wm/WindowSurfaceController.java
+index 3f8c2b2..77ea0b7 100644
+--- a/services/core/java/com/android/server/wm/WindowSurfaceController.java
++++ b/services/core/java/com/android/server/wm/WindowSurfaceController.java
+@@ -279,11 +279,41 @@ class WindowSurfaceController {
+         }
+     }
+ 
++    //++[Feature]Let the window surface can be projected
++    //: For one hand mode
++    private float mRawLeft = 0;
++    private float mRawTop = 0;
++    private float mRawDsdx = 1;
++    private float mRawDtdx = 0;
++    private float mRawDsdy = 0;
++    private float mRawDtdy = 1;
++
++    void updateProjectionInTransaction() {
++        if (mAnimator.mWin.canBeProjected()) {
++            setPositionInTransaction(mRawLeft, mRawTop, false);
++            setMatrixInTransaction(mRawDsdx, mRawDtdx, mRawDsdy, mRawDtdy, false);
++        }
++    }
++    //--[Feature]Let the window surface can be projected
++
+     void setPositionInTransaction(float left, float top, boolean recoveringMemory) {
++        //++[Feature]Let the window surface can be projected
++        mRawLeft = left;
++        mRawTop = top;
++        //--[Feature]Let the window surface can be projected
++
+         //++[Feature]Center small aspect ratio apps in display
+         left += mAnimator.mWin.mShiftX;
+         top += mAnimator.mWin.mShiftY;
+         //--[Feature]Center small aspect ratio apps in display
++
++        //++[Feature]Let the window surface can be projected
++        if (mAnimator.mWin.canBeProjected()) {
++            final float projectionScale = mService.mProjectionScale;
++            left = left * projectionScale + mService.mProjectionX;
++            top = top * projectionScale + mService.mProjectionY;
++        }
++        //--[Feature]Let the window surface can be projected
+         final boolean surfaceMoved = mSurfaceX != left || mSurfaceY != top;
+         if (surfaceMoved) {
+             mSurfaceX = left;
+@@ -312,6 +342,19 @@ class WindowSurfaceController {
+ 
+     void setMatrixInTransaction(float dsdx, float dtdx, float dsdy, float dtdy,
+             boolean recoveringMemory) {
++        //++[Feature]Let the window surface can be projected
++        if (mAnimator.mWin.canBeProjected()) {
++            mRawDsdx = dsdx;
++            mRawDtdx = dtdx;
++            mRawDsdy = dsdy;
++            mRawDtdy = dtdy;
++            final float projectionScale = mService.mProjectionScale;
++            dsdx *= projectionScale;
++            dtdx *= projectionScale;
++            dsdy *= projectionScale;
++            dtdy *= projectionScale;
++        }
++        //--[Feature]Let the window surface can be projected
+         final boolean matrixChanged = mLastDsdx != dsdx || mLastDtdx != dtdx ||
+                                       mLastDsdy != dsdy || mLastDtdy != dtdy;
+         if (!matrixChanged) {
+@@ -375,6 +418,19 @@ class WindowSurfaceController {
+             try {
+                 mSurfaceAlpha = alpha;
+                 mSurfaceControl.setAlpha(alpha);
++                //++[Feature]Let the window surface can be projected
++                if (mAnimator.mWin.canBeProjected()) {
++                    mRawDsdx = dsdx;
++                    mRawDtdx = dtdx;
++                    mRawDsdy = dsdy;
++                    mRawDtdy = dtdy;
++                    final float projectionScale = mService.mProjectionScale;
++                    dsdx *= projectionScale;
++                    dtdx *= projectionScale;
++                    dsdy *= projectionScale;
++                    dtdy *= projectionScale;
++                }
++                //--[Feature]Let the window surface can be projected
+                 mLastDsdx = dsdx;
+                 mLastDtdx = dtdx;
+                 mLastDsdy = dsdy;
+@@ -574,6 +630,15 @@ class WindowSurfaceController {
+         pw.print(" transform=("); pw.print(mLastDsdx); pw.print(", ");
+         pw.print(mLastDtdx); pw.print(", "); pw.print(mLastDsdy);
+         pw.print(", "); pw.print(mLastDtdy); pw.println(")");
++        //++[Feature]Let the window surface can be projected
++        if (DEBUG_HTC) {
++            pw.print(prefix); pw.print("  Projection:"); 
++            pw.print(" canBeProjected="); pw.print(mAnimator.mWin.canBeProjected());
++            pw.print(" rawPos=("); pw.print(mRawLeft); pw.print(","); pw.print(mRawTop); pw.print(") ");
++            pw.print(" rawTrans=("); pw.print(mRawDsdx); pw.print(", "); pw.print(mRawDtdx); pw.print(", ");
++            pw.print(mRawDsdy); pw.print(", "); pw.print(mRawDtdy); pw.println(")");
++        }
++        //--[Feature]Let the window surface can be projected
+     }
+ 
+     @Override
+diff --git a/tools/layoutlib/bridge/src/android/view/IWindowManagerImpl.java b/tools/layoutlib/bridge/src/android/view/IWindowManagerImpl.java
+index 1ed68f4..255e663 100644
+--- a/tools/layoutlib/bridge/src/android/view/IWindowManagerImpl.java
++++ b/tools/layoutlib/bridge/src/android/view/IWindowManagerImpl.java
+@@ -381,6 +381,18 @@ public class IWindowManagerImpl implements IWindowManager {
+         // TODO Auto-generated method stub
+     }
+ 
++    //++[Feature]Let the window surface can be projected
++    @Override
++    public void setProjection(int x, int y, float scale) {
++        // TODO Auto-generated method stub
++    }
++
++    @Override
++    public void updateInputForProjection() {
++        // TODO Auto-generated method stub
++    }
++    //--[Feature]Let the window surface can be projected
++
+     @Override
+     public boolean stopViewServer() throws RemoteException {
+         // TODO Auto-generated method stub
+-- 
+1.9.1
+

@@ -1,0 +1,83 @@
+From 0562b2153989903b7afdfec55bff6cab2e5ea69b Mon Sep 17 00:00:00 2001
+Subject: [PATCH] [Input] Support touch scale by window
+
+---
+ .../android/server/input/InputWindowHandle.java    | 23 ++++++++++++++++++++++
+ .../com_android_server_input_InputWindowHandle.cpp |  6 ++++++
+ 2 files changed, 29 insertions(+)
+
+diff --git a/services/core/java/com/android/server/input/InputWindowHandle.java b/services/core/java/com/android/server/input/InputWindowHandle.java
+index c5c5ebc..a4841e5 100644
+--- a/services/core/java/com/android/server/input/InputWindowHandle.java
++++ b/services/core/java/com/android/server/input/InputWindowHandle.java
+@@ -97,6 +97,28 @@ public final class InputWindowHandle {
+     //++[Feature]Support touch shift by window
+     public float shiftX = 0.0f;
+     public float shiftY = 0.0f;
++    public float preScaleFactor = 1.0f;
++
++    public void applyShiftWithScale(int winX, int winY,
++            float innerShiftX, float innerShiftY, float windowScale) {
++        shiftX = winX + innerShiftX * windowScale;
++        shiftY = winY + innerShiftY * windowScale;
++        frameRight = frameLeft + (int) ((frameRight - frameLeft) * windowScale + shiftX);
++        frameBottom = frameTop + (int) ((frameBottom - frameTop) * windowScale + shiftY);
++        frameLeft += shiftX;
++        frameTop += shiftY;
++        preScaleFactor = 1.0f / windowScale;
++    }
++
++    public void applyShift(float innerShiftX, float innerShiftY) {
++        shiftX = innerShiftX;
++        shiftY = innerShiftY;
++        frameLeft += innerShiftX;
++        frameTop += innerShiftY;
++        frameRight += innerShiftX;
++        frameBottom += innerShiftY;
++        preScaleFactor = 1.0f;
++    }
+     //--[Feature]Support touch shift by window
+ 
+     private native void nativeDispose();
+@@ -120,6 +142,7 @@ public final class InputWindowHandle {
+                 //++[Feature]Support touch shift by window
+                 .append(", shiftX=").append(shiftX)
+                 .append(", shiftY=").append(shiftY)
++                .append(", preScaleFactor=").append(preScaleFactor)
+                 //--[Feature]Support touch shift by window
+                 .toString();
+ 
+diff --git a/services/core/jni/com_android_server_input_InputWindowHandle.cpp b/services/core/jni/com_android_server_input_InputWindowHandle.cpp
+index 9a20cde..f7d8268 100644
+--- a/services/core/jni/com_android_server_input_InputWindowHandle.cpp
++++ b/services/core/jni/com_android_server_input_InputWindowHandle.cpp
+@@ -57,6 +57,7 @@ static struct {
+     //++[Feature]Support touch shift by window
+     jfieldID shiftX;
+     jfieldID shiftY;
++    jfieldID preScaleFactor;
+     //--[Feature]Support touch shift by window
+ } gInputWindowHandleClassInfo;
+ 
+@@ -168,6 +169,8 @@ bool NativeInputWindowHandle::updateInfo() {
+             gInputWindowHandleClassInfo.shiftX);
+     mInfo->shiftY = env->GetFloatField(obj,
+             gInputWindowHandleClassInfo.shiftY);
++    mInfo->preScaleFactor = env->GetFloatField(obj,
++            gInputWindowHandleClassInfo.preScaleFactor);
+     //--[Feature]Support touch shift by window
+ 
+     env->DeleteLocalRef(obj);
+@@ -320,6 +323,9 @@ int register_android_server_InputWindowHandle(JNIEnv* env) {
+ 
+     GET_FIELD_ID(gInputWindowHandleClassInfo.shiftY, clazz,
+             "shiftY", "F");
++
++    GET_FIELD_ID(gInputWindowHandleClassInfo.preScaleFactor, clazz,
++            "preScaleFactor", "F");
+     //--[Feature]Support touch shift by window
+ 
+     return 0;
+-- 
+1.9.1
+

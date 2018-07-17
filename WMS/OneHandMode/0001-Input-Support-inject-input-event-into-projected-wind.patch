@@ -1,0 +1,85 @@
+From 1df0b0a557b5a95060fbe3ab953ce35606a3fd12 Mon Sep 17 00:00:00 2001
+Subject: [PATCH] [Input] Support inject input event into projected window
+
+---
+ .../android/server/input/InputManagerService.java  | 23 ++++++++++++++++++++++
+ .../java/com/android/server/wm/InputMonitor.java   | 17 ++++++++++++++++
+ 2 files changed, 40 insertions(+)
+
+diff --git a/services/core/java/com/android/server/input/InputManagerService.java b/services/core/java/com/android/server/input/InputManagerService.java
+index 6efd059..fb2ab07 100644
+--- a/services/core/java/com/android/server/input/InputManagerService.java
++++ b/services/core/java/com/android/server/input/InputManagerService.java
+@@ -855,6 +855,12 @@ public class InputManagerService extends IInputManager.Stub
+         if (event == null) {
+             throw new IllegalArgumentException("event must not be null");
+         }
++        //++[Feature] Support inject input event into projected window
++        // Caller has to use IInputManager to avoid mode checking in client side.
++        final int noProjectionFlag = 0x1000000;
++        final boolean noProjection = (mode & noProjectionFlag) != 0;
++        if (noProjection) mode &= ~noProjectionFlag;
++        //--[Feature]Support inject input event into projected window
+         if (mode != InputManager.INJECT_INPUT_EVENT_MODE_ASYNC
+                 && mode != InputManager.INJECT_INPUT_EVENT_MODE_WAIT_FOR_FINISH
+                 && mode != InputManager.INJECT_INPUT_EVENT_MODE_WAIT_FOR_RESULT) {
+@@ -866,6 +872,17 @@ public class InputManagerService extends IInputManager.Stub
+         final long ident = Binder.clearCallingIdentity();
+         final int result;
+         try {
++            //++[Feature]Support inject input event into projected window
++            final float scale = mWindowManagerCallbacks.getProjectionScale();
++            final float offsetX = mWindowManagerCallbacks.getProjectionX();
++            final float offsetY = mWindowManagerCallbacks.getProjectionY();
++            if ((scale != 1f || offsetX != 0f || offsetY != 0f)
++                    && event instanceof android.view.MotionEvent && !noProjection) {
++                android.view.MotionEvent motion = (android.view.MotionEvent) event;
++                motion.scale(scale);
++                motion.offsetLocation(offsetX, offsetY);
++            }
++            //--[Feature]Support inject input event into projected window
+             result = nativeInjectInputEvent(mPtr, event, displayId, pid, uid, mode,
+                     INJECTION_TIMEOUT_MILLIS, WindowManagerPolicy.FLAG_DISABLE_KEY_REPEAT);
+         } finally {
+@@ -2638,6 +2655,12 @@ public class InputManagerService extends IInputManager.Stub
+         //++[Feature]provide API for LINK to disable input
+         public void setLINKMode(boolean enabled);
+         //--[Feature]provide API for LINK to disable input
++
++        //++[Feature]Support inject input event into projected window
++        float getProjectionScale();
++        float getProjectionX();
++        float getProjectionY();
++        //--[Feature]Support inject input event into projected window
+     }
+ 
+     /**
+diff --git a/services/core/java/com/android/server/wm/InputMonitor.java b/services/core/java/com/android/server/wm/InputMonitor.java
+index 17cc1fe..8ef68f9 100644
+--- a/services/core/java/com/android/server/wm/InputMonitor.java
++++ b/services/core/java/com/android/server/wm/InputMonitor.java
+@@ -735,4 +735,21 @@ final class InputMonitor implements InputManagerService.WindowManagerCallbacks {
+         mService.mPolicy.setLINKMode(enabled);
+     }
+     //--[Feature]provide API for LINK to disable input
++
++    //++[Feature]Support inject input event into projected window
++    @Override
++    public float getProjectionScale() {
++        return mService.mProjectionScale;
++    }
++
++    @Override
++    public float getProjectionX() {
++        return mService.mProjectionX;
++    }
++
++    @Override
++    public float getProjectionY() {
++        return mService.mProjectionY;
++    }
++    //--[Feature]Support inject input event into projected window
+ }
+-- 
+1.9.1
+

@@ -1,0 +1,26 @@
+From 8d26b466262390b0b40d8bde3f5e43ae52b1808d Mon Sep 17 00:00:00 2001
+
+---
+ services/core/java/com/android/server/wm/InputMonitor.java | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/services/core/java/com/android/server/wm/InputMonitor.java b/services/core/java/com/android/server/wm/InputMonitor.java
+index 8ef68f9..9183af9 100644
+--- a/services/core/java/com/android/server/wm/InputMonitor.java
++++ b/services/core/java/com/android/server/wm/InputMonitor.java
+@@ -687,6 +687,12 @@ final class InputMonitor implements InputManagerService.WindowManagerCallbacks {
+                         && (inputWindowHandle.layer <= pipInputConsumer.mWindowHandle.layer)) {
+                     // Update the bounds of the Pip input consumer to match the Pinned stack
+                     w.getStack().getBounds(pipTouchableBounds);
++                    //++[Feature]Let the window surface can be projected
++                    if (w.canBeProjected()) {
++                        pipTouchableBounds.scale(mService.mProjectionScale);
++                        pipTouchableBounds.offset((int) mService.mProjectionX, (int) mService.mProjectionY);
++                    }
++                    //--[Feature]Let the window surface can be projected
+                     pipInputConsumer.mWindowHandle.touchableRegion.set(pipTouchableBounds);
+                     addInputWindowHandle(pipInputConsumer.mWindowHandle);
+                     mAddPipInputConsumerHandle = false;
+-- 
+1.9.1
+

@@ -1,0 +1,25 @@
+From 558881fc9614a2f7a2413f4e1502f3c6bce6fced Mon Sep 17 00:00:00 2001
+Subject: [PATCH] [WM] fine tune Center small aspect ratio apps in display
+---
+ services/core/java/com/android/server/wm/WindowState.java | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/services/core/java/com/android/server/wm/WindowState.java b/services/core/java/com/android/server/wm/WindowState.java
+index 0f60ca1..6013fef 100644
+--- a/services/core/java/com/android/server/wm/WindowState.java
++++ b/services/core/java/com/android/server/wm/WindowState.java
+@@ -1000,8 +1000,10 @@ class WindowState extends WindowContainer<WindowState> implements WindowManagerP
+                 final boolean hideStatus = (vis & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0
+                         || (flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
+                 final boolean hideNavigation = (vis & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0;
++                final boolean isFullScreen = mAppToken.fillsParent();
+                 if (!forceStatus && hideStatus && hideNavigation
+-                        && mAttrs.width == MATCH_PARENT && mAttrs.height == MATCH_PARENT) {
++                        && mAttrs.width == MATCH_PARENT && mAttrs.height == MATCH_PARENT
++                        && isFullScreen) {
+                     final int displayWidth = dc.getDisplayInfo().logicalWidth;
+                     final int displayHeight = dc.getDisplayInfo().logicalHeight;
+                     final int newX = (displayWidth - mFrame.width()) / 2;
+-- 
+1.9.1
+

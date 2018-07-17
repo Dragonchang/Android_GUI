@@ -1,0 +1,83 @@
+From 5787106b35f634474d63bbb72703b3125ab9811a Mon Sep 17 00:00:00 2001
+Subject: [PATCH] [Input] Support touch shift by window
+
+---
+ .../com/android/server/input/InputWindowHandle.java  |  9 +++++++++
+ .../com_android_server_input_InputWindowHandle.cpp   | 20 ++++++++++++++++++++
+ 2 files changed, 29 insertions(+)
+
+diff --git a/services/core/java/com/android/server/input/InputWindowHandle.java b/services/core/java/com/android/server/input/InputWindowHandle.java
+index 3d6f7ad..c5c5ebc 100644
+--- a/services/core/java/com/android/server/input/InputWindowHandle.java
++++ b/services/core/java/com/android/server/input/InputWindowHandle.java
+@@ -94,6 +94,11 @@ public final class InputWindowHandle {
+     // Display this input is on.
+     public final int displayId;
+ 
++    //++[Feature]Support touch shift by window
++    public float shiftX = 0.0f;
++    public float shiftY = 0.0f;
++    //--[Feature]Support touch shift by window
++
+     private native void nativeDispose();
+ 
+     public InputWindowHandle(InputApplicationHandle inputApplicationHandle,
+@@ -112,6 +117,10 @@ public final class InputWindowHandle {
+                         .append(frameRight).append(",").append(frameBottom).append("]")
+                 .append(", touchableRegion=").append(touchableRegion)
+                 .append(", visible=").append(visible)
++                //++[Feature]Support touch shift by window
++                .append(", shiftX=").append(shiftX)
++                .append(", shiftY=").append(shiftY)
++                //--[Feature]Support touch shift by window
+                 .toString();
+ 
+     }
+diff --git a/services/core/jni/com_android_server_input_InputWindowHandle.cpp b/services/core/jni/com_android_server_input_InputWindowHandle.cpp
+index 197d056..9a20cde 100644
+--- a/services/core/jni/com_android_server_input_InputWindowHandle.cpp
++++ b/services/core/jni/com_android_server_input_InputWindowHandle.cpp
+@@ -54,6 +54,10 @@ static struct {
+     jfieldID ownerUid;
+     jfieldID inputFeatures;
+     jfieldID displayId;
++    //++[Feature]Support touch shift by window
++    jfieldID shiftX;
++    jfieldID shiftY;
++    //--[Feature]Support touch shift by window
+ } gInputWindowHandleClassInfo;
+ 
+ static Mutex gHandleMutex;
+@@ -159,6 +163,13 @@ bool NativeInputWindowHandle::updateInfo() {
+     mInfo->displayId = env->GetIntField(obj,
+             gInputWindowHandleClassInfo.displayId);
+ 
++    //++[Feature]Support touch shift by window
++    mInfo->shiftX = env->GetFloatField(obj,
++            gInputWindowHandleClassInfo.shiftX);
++    mInfo->shiftY = env->GetFloatField(obj,
++            gInputWindowHandleClassInfo.shiftY);
++    //--[Feature]Support touch shift by window
++
+     env->DeleteLocalRef(obj);
+     return true;
+ }
+@@ -302,6 +313,15 @@ int register_android_server_InputWindowHandle(JNIEnv* env) {
+ 
+     GET_FIELD_ID(gInputWindowHandleClassInfo.displayId, clazz,
+             "displayId", "I");
++
++    //++[Feature]Support touch shift by window
++    GET_FIELD_ID(gInputWindowHandleClassInfo.shiftX, clazz,
++            "shiftX", "F");
++
++    GET_FIELD_ID(gInputWindowHandleClassInfo.shiftY, clazz,
++            "shiftY", "F");
++    //--[Feature]Support touch shift by window
++
+     return 0;
+ }
+ 
+-- 
+1.9.1
+

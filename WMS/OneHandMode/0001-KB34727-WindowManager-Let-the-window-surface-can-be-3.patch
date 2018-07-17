@@ -1,0 +1,100 @@
+From 05a6220383249ffcdab5f435a216cb3f17832afd Mon Sep 17 00:00:00 2001
+
+---
+ services/core/java/com/android/server/wm/DimLayer.java   | 16 ++++++++++++++--
+ .../core/java/com/android/server/wm/WindowState.java     |  2 +-
+ .../com/android/server/wm/WindowSurfaceController.java   | 14 +++++++++++++-
+ 3 files changed, 28 insertions(+), 4 deletions(-)
+
+diff --git a/services/core/java/com/android/server/wm/DimLayer.java b/services/core/java/com/android/server/wm/DimLayer.java
+index 015c084..c911513 100644
+--- a/services/core/java/com/android/server/wm/DimLayer.java
++++ b/services/core/java/com/android/server/wm/DimLayer.java
+@@ -190,13 +190,25 @@ public class DimLayer {
+      * NOTE: Must be called with Surface transaction open.
+      */
+     private void adjustBounds() {
++        //++[Feature]Let the window surface can be projected
++        float scale = mService.mProjectionScale;
++        float x = mService.mProjectionX;
++        float y = mService.mProjectionY;
++        //--[Feature]Let the window surface can be projected
+         if (mUser.dimFullscreen()) {
+             getBoundsForFullscreen(mBounds);
++            //++[Feature]Let the window surface can be projected
++            scale = 1f;
++            x = 0;
++            y = 0;
++            //--[Feature]Let the window surface can be projected
+         }
+ 
+         if (mDimSurface != null) {
+-            mDimSurface.setPosition(mBounds.left, mBounds.top);
+-            mDimSurface.setSize(mBounds.width(), mBounds.height());
++            //++[Feature]Let the window surface can be projected
++            mDimSurface.setPosition(x + scale * mBounds.left, y + scale * mBounds.top);
++            mDimSurface.setSize((int) (scale * mBounds.width()), (int) (scale * mBounds.height()));
++            //--[Feature]Let the window surface can be projected
+             if (DEBUG_DIM_LAYER) Slog.v(TAG,
+                     "adjustBounds user=" + mUser.toShortString() + " mBounds=" + mBounds);
+         }
+diff --git a/services/core/java/com/android/server/wm/WindowState.java b/services/core/java/com/android/server/wm/WindowState.java
+index ea11f01..954ab94 100644
+--- a/services/core/java/com/android/server/wm/WindowState.java
++++ b/services/core/java/com/android/server/wm/WindowState.java
+@@ -3068,7 +3068,7 @@ class WindowState extends WindowContainer<WindowState> implements WindowManagerP
+             case WindowManager.LayoutParams.TYPE_SECURE_SYSTEM_OVERLAY:
+             return false;
+         }
+-        return true;
++        return isDefaultDisplay();
+     }
+     //--[Feature]Let the window surface can be projected
+ 
+diff --git a/services/core/java/com/android/server/wm/WindowSurfaceController.java b/services/core/java/com/android/server/wm/WindowSurfaceController.java
+index 77ea0b7..3d8fb1e 100644
+--- a/services/core/java/com/android/server/wm/WindowSurfaceController.java
++++ b/services/core/java/com/android/server/wm/WindowSurfaceController.java
+@@ -243,6 +243,15 @@ class WindowSurfaceController {
+     }
+ 
+     void setFinalCropInTransaction(Rect clipRect) {
++        //++[Feature]Let the window surface can be projected
++        mRawFinalCropRect.set(clipRect);
++        if (mAnimator.mWin.canBeProjected() && !clipRect.isEmpty()) {
++            mFinalCropRect.set(clipRect);
++            clipRect = mFinalCropRect;
++            clipRect.scale(mService.mProjectionScale);
++            clipRect.offset((int) mService.mProjectionX, (int) mService.mProjectionY);
++        }
++        //--[Feature]Let the window surface can be projected
+         //++[Debug]Add HTC debug logs for the debug ROMs
+         if (SHOW_TRANSACTIONS || DEBUG_HTC) logSurface(
+         //--[Debug]Add HTC debug logs for the debug ROMs
+@@ -287,11 +296,14 @@ class WindowSurfaceController {
+     private float mRawDtdx = 0;
+     private float mRawDsdy = 0;
+     private float mRawDtdy = 1;
++    private final Rect mRawFinalCropRect = new Rect();
++    private final Rect mFinalCropRect = new Rect();
+ 
+     void updateProjectionInTransaction() {
+         if (mAnimator.mWin.canBeProjected()) {
+             setPositionInTransaction(mRawLeft, mRawTop, false);
+             setMatrixInTransaction(mRawDsdx, mRawDtdx, mRawDsdy, mRawDtdy, false);
++            setFinalCropInTransaction(mRawFinalCropRect);
+         }
+     }
+     //--[Feature]Let the window surface can be projected
+@@ -632,7 +644,7 @@ class WindowSurfaceController {
+         pw.print(", "); pw.print(mLastDtdy); pw.println(")");
+         //++[Feature]Let the window surface can be projected
+         if (DEBUG_HTC) {
+-            pw.print(prefix); pw.print("  Projection:"); 
++            pw.print(prefix); pw.print("  Projection:");
+             pw.print(" canBeProjected="); pw.print(mAnimator.mWin.canBeProjected());
+             pw.print(" rawPos=("); pw.print(mRawLeft); pw.print(","); pw.print(mRawTop); pw.print(") ");
+             pw.print(" rawTrans=("); pw.print(mRawDsdx); pw.print(", "); pw.print(mRawDtdx); pw.print(", ");
+-- 
+1.9.1
+
