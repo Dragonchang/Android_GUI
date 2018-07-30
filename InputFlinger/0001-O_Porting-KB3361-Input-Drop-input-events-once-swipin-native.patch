@@ -1,0 +1,208 @@
+From 60120346c8c6df4a39cc27e25d97b5fd85a409cb Mon Sep 17 00:00:00 2001
+
+---
+ services/inputflinger/InputDispatcher.cpp          | 91 ++++++++++++++++++++++
+ services/inputflinger/InputDispatcher.h            | 26 +++++++
+ .../inputflinger/tests/InputDispatcher_test.cpp    |  6 ++
+ 3 files changed, 123 insertions(+)
+
+diff --git a/services/inputflinger/InputDispatcher.cpp b/services/inputflinger/InputDispatcher.cpp
+index 838e023..43b4321 100644
+--- a/services/inputflinger/InputDispatcher.cpp
++++ b/services/inputflinger/InputDispatcher.cpp
+@@ -108,6 +108,12 @@ static inline nsecs_t getEventTime(nsecs_t nanos) {
+ }
+
+ 
++
++//++[Feature]drop input events once swiping navigation bar callback happens
++const int32_t QUEUE_ACTION_ENQUEUE = 1;
++const int32_t QUEUE_ACTION_DROPQUEUE = 2;
++//--[Feature]drop input events once swiping navigation bar callback happens
++
+ // Number of recent events to keep for debugging purposes.
+ const size_t RECENT_QUEUE_MAX_SIZE = 10;
+ 
+@@ -285,6 +291,10 @@ InputDispatcher::InputDispatcher(const sp<InputDispatcherPolicyInterface>& polic
+     mKeyRepeatState.lastKeyEntry = NULL;
+ 
+     policy->getDispatcherConfiguration(&mConfig);
++
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    mNeedSwipeChecking = false;
++    //--[Feature]drop input events once swiping navigation bar callback happens
+ }
+ 
+ InputDispatcher::~InputDispatcher() {
+@@ -2720,6 +2730,61 @@ void InputDispatcher::notifyMotion(const NotifyMotionArgs* args) {
+ #endif
+ 
++//++[Feature]drop input events once swiping navigation bar callback happens
++//: only call interceptMotionBeforeQueueingForSwipe when action is AMOTION_EVENT_ACTION_DOWN
++//: use mNeedSwipeChecking to check if swiping detecting process is needed in order to reduce effort
++    { // acquire lock
++        mSwipeQueueLock.lock();
++        if (args->action == AMOTION_EVENT_ACTION_DOWN || mNeedSwipeChecking) {
++            mSwipeQueueLock.unlock();
++
++            MotionEvent event;
++            event.initialize(args->deviceId, args->source, args->action, args->actionButton, args->flags,
++                    args->edgeFlags, args->metaState, args->buttonState, 0, 0,
++                    args->xPrecision, args->yPrecision,
++                    args->downTime, args->eventTime,
++                    args->pointerCount, args->pointerProperties, args->pointerCoords);
++            int32_t action = mPolicy->interceptMotionBeforeQueueingForSwipe(&event);
++
++            mSwipeQueueLock.lock();
++
++            if (action == QUEUE_ACTION_ENQUEUE) { // enqueue
++                NotifyMotionArgsEntry* argsEntry = new NotifyMotionArgsEntry(args);
++                mSwipeQueue.enqueueAtTail(argsEntry);
++                mNeedSwipeChecking = true;
++            } else if (action == QUEUE_ACTION_DROPQUEUE) { // dropqueue
++                while (!mSwipeQueue.isEmpty()) {
++                    NotifyMotionArgsEntry* argsEntry = mSwipeQueue.dequeueAtHead();
++                    delete argsEntry;
++                }
++
++                mNeedSwipeChecking = false;
++
++                { // acquire lock
++                    AutoMutex _l(mLock);
++                    resetAndDropEverythingLocked("Swiping navigation bar callback happens");
++                } // release lock
++            } else { // flush queue
++                while (!mSwipeQueue.isEmpty()) {
++                    NotifyMotionArgsEntry* argsEntry = mSwipeQueue.dequeueAtHead();
++                    const NotifyMotionArgs *argsInQueue = argsEntry->args;
++                    notifyMotionAfterSwipe(argsInQueue);
++                    delete argsEntry;
++                }
++
++                mNeedSwipeChecking = false;
++                notifyMotionAfterSwipe(args);
++            }
++        } else {
++            notifyMotionAfterSwipe(args);
++        }
++        mSwipeQueueLock.unlock();
++    }
++}
++
++void InputDispatcher::notifyMotionAfterSwipe(const NotifyMotionArgs* args) {
++//--[Feature]drop input events once swiping navigation bar callback happens
++
+     uint32_t policyFlags = args->policyFlags;
+     policyFlags |= POLICY_FLAG_TRUSTED;
+     mPolicy->interceptMotionBeforeQueueing(args->eventTime, /*byref*/ policyFlags);
+@@ -2771,6 +2836,32 @@ void InputDispatcher::notifyMotion(const NotifyMotionArgs* args) {
+     }
+ }
+ 
++//++[Feature]drop input events once swiping navigation bar callback happens
++InputDispatcher::NotifyMotionArgsEntry::NotifyMotionArgsEntry(const NotifyMotionArgs* args) {
++    this->args = new NotifyMotionArgs(*args);
++}
++
++InputDispatcher::NotifyMotionArgsEntry::~NotifyMotionArgsEntry() {
++    delete args;
++}
++
++void InputDispatcher::flushInputSwipeQueue() {
++    { // acquire lock
++        AutoMutex _l(mSwipeQueueLock);
++        while (!mSwipeQueue.isEmpty()) {
++            NotifyMotionArgsEntry* argsEntry = mSwipeQueue.dequeueAtHead();
++            const NotifyMotionArgs *argsInQueue = argsEntry->args;
++            notifyMotionAfterSwipe(argsInQueue);
++            delete argsEntry;
++        }
++
++        mNeedSwipeChecking = false;
++    }
++    // Wake up poll loop since there might be work to do to flush everything.
++    mLooper->wake();
++}
++//--[Feature]drop input events once swiping navigation bar callback happens
++
+ bool InputDispatcher::shouldSendMotionToInputFilterLocked(const NotifyMotionArgs* args) {
+     // TODO: support sending secondary display events to input filter
+     return mInputFilterEnabled && isMainDisplay(args->displayId);
+diff --git a/services/inputflinger/InputDispatcher.h b/services/inputflinger/InputDispatcher.h
+index 90c69ce..24e57ce 100644
+--- a/services/inputflinger/InputDispatcher.h
++++ b/services/inputflinger/InputDispatcher.h
+@@ -242,6 +242,10 @@ public:
+      */
+     virtual void interceptMotionBeforeQueueing(nsecs_t when, uint32_t& policyFlags) = 0;
+ 
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    virtual int32_t interceptMotionBeforeQueueingForSwipe(const InputEvent* inputEvent) = 0;
++    //--[Feature]drop input events once swiping navigation bar callback happens
++
+     /* Allows the policy a chance to intercept a key before dispatching. */
+     virtual nsecs_t interceptKeyBeforeDispatching(const sp<InputWindowHandle>& inputWindowHandle,
+             const KeyEvent* keyEvent, uint32_t policyFlags) = 0;
+@@ -347,6 +351,10 @@ public:
+     virtual status_t registerInputChannel(const sp<InputChannel>& inputChannel,
+             const sp<InputWindowHandle>& inputWindowHandle, bool monitor) = 0;
+     virtual status_t unregisterInputChannel(const sp<InputChannel>& inputChannel) = 0;
++
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    virtual void flushInputSwipeQueue() = 0;
++    //--[Feature]drop input events once swiping navigation bar callback happens
+ };
+ 
+ /* Dispatches events to input targets.  Some functions of the input dispatcher, such as
+@@ -400,6 +408,10 @@ public:
+             const sp<InputWindowHandle>& inputWindowHandle, bool monitor);
+     virtual status_t unregisterInputChannel(const sp<InputChannel>& inputChannel);
+ 
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    virtual void flushInputSwipeQueue();
++    //--[Feature]drop input events once swiping navigation bar callback happens
++
+ private:
+     template <typename T>
+     struct Link {
+@@ -1136,6 +1148,20 @@ private:
+     void traceInboundQueueLengthLocked();
+     void traceOutboundQueueLengthLocked(const sp<Connection>& connection);
+     void traceWaitQueueLengthLocked(const sp<Connection>& connection);
++
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    struct NotifyMotionArgsEntry : Link<NotifyMotionArgsEntry> {
++        NotifyMotionArgsEntry(const NotifyMotionArgs* args);
++        ~NotifyMotionArgsEntry();
++        const NotifyMotionArgs* args; // the event to dispatch
++    };
++
++    Mutex mSwipeQueueLock;
++    Queue<NotifyMotionArgsEntry> mSwipeQueue;
++    bool mNeedSwipeChecking;
++
++    void notifyMotionAfterSwipe(const NotifyMotionArgs* args);
++    //--[Feature]drop input events once swiping navigation bar callback happens
+ };
+ 
+ /* Enqueues and dispatches input events, endlessly. */
+diff --git a/services/inputflinger/tests/InputDispatcher_test.cpp b/services/inputflinger/tests/InputDispatcher_test.cpp
+index 7ae36d8..c8c6f6a 100644
+--- a/services/inputflinger/tests/InputDispatcher_test.cpp
++++ b/services/inputflinger/tests/InputDispatcher_test.cpp
+@@ -75,6 +75,12 @@ private:
+     virtual void interceptMotionBeforeQueueing(nsecs_t, uint32_t&) {
+     }
+ 
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    virtual int32_t interceptMotionBeforeQueueingForSwipe(const InputEvent* inputEvent) {
++        return 0;
++    }
++    //--[Feature]drop input events once swiping navigation bar callback happens
++
+     virtual nsecs_t interceptKeyBeforeDispatching(const sp<InputWindowHandle>&,
+             const KeyEvent*, uint32_t) {
+         return 0;
+-- 
+1.9.1
+
