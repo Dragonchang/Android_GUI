@@ -1,0 +1,466 @@
+From aaf4ca6ff6e76a8510da9516e8a9018669c8721a Mon Sep 17 00:00:00 2001
+
+---
+ core/java/android/view/IWindowManager.aidl         |   4 +
+ core/java/android/view/WindowManagerPolicy.java    |   4 +
+ .../android/server/input/InputManagerService.java  |  21 +++
+ .../android/server/policy/PhoneWindowManager.java  | 155 +++++++++++++++++++++
+ .../policy/SystemGesturesPointerEventListener.java |  40 ++++++
+ .../java/com/android/server/wm/InputMonitor.java   |  10 ++
+ .../android/server/wm/WindowManagerService.java    |   6 +
+ ...om_android_server_input_InputManagerService.cpp |  55 ++++++++
+ .../src/android/view/IWindowManagerImpl.java       |   5 +
+ 9 files changed, 300 insertions(+)
+
+diff --git a/core/java/android/view/IWindowManager.aidl b/core/java/android/view/IWindowManager.aidl
+index a2ff4f7..ea23c25 100644
+--- a/core/java/android/view/IWindowManager.aidl
++++ b/core/java/android/view/IWindowManager.aidl
+@@ -376,4 +376,8 @@ interface IWindowManager
+      * associated with that InputConsumer.
+      */
+     boolean destroyInputConsumer(String name);
++
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    void flushInputSwipeQueue();
++    //--[Feature]drop input events once swiping navigation bar callback happens
+ }
+diff --git a/core/java/android/view/WindowManagerPolicy.java b/core/java/android/view/WindowManagerPolicy.java
+index 030c78b..55ae803 100644
+--- a/core/java/android/view/WindowManagerPolicy.java
++++ b/core/java/android/view/WindowManagerPolicy.java
+@@ -1068,6 +1068,10 @@ public interface WindowManagerPolicy {
+      */
+     public int interceptMotionBeforeQueueingNonInteractive(long whenNanos, int policyFlags);
+ 
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    public int interceptMotionBeforeQueueingForSwipe(InputEvent event);
++    //--[Feature]drop input events once swiping navigation bar callback happens
++
+     /**
+      * Called from the input dispatcher thread before a key is dispatched to a window.
+      *
+diff --git a/services/core/java/com/android/server/input/InputManagerService.java b/services/core/java/com/android/server/input/InputManagerService.java
+index 907b5c1..0e7c286 100644
+--- a/services/core/java/com/android/server/input/InputManagerService.java
++++ b/services/core/java/com/android/server/input/InputManagerService.java
+@@ -2083,6 +2083,10 @@ public class InputManagerService extends IInputManager.Stub
+ 
+         public int interceptMotionBeforeQueueingNonInteractive(long whenNanos, int policyFlags);
+ 
++        //++[Feature]drop input events once swiping navigation bar callback happens
++        public int interceptMotionBeforeQueueingForSwipe(InputEvent event);
++        //--[Feature]drop input events once swiping navigation bar callback happens
++
+         public long interceptKeyBeforeDispatching(InputWindowHandle focus,
+                 KeyEvent event, int policyFlags);
+ 
+@@ -2354,4 +2358,21 @@ public class InputManagerService extends IInputManager.Stub
+             }
+         }
+     }
++
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    private final String FILTER_EVENTS_PERMISSION = "android.permission.FILTER_EVENTS";
++    private static native void nativeFlushInputSwipeQueue(long ptr);
++
++    public void flushInputSwipeQueue() {
++        //caller must have proper permission or it will get SecurityException
++        mContext.enforceCallingOrSelfPermission(FILTER_EVENTS_PERMISSION, TAG);
++        nativeFlushInputSwipeQueue(mPtr);
++    }
++
++    // Native callback.
++    private int interceptMotionBeforeQueueingForSwipe(InputEvent event) {
++        return mWindowManagerCallbacks.interceptMotionBeforeQueueingForSwipe(event);
++    }
++    //--[Feature]drop input events once swiping navigation bar callback happens
++
+ }
+diff --git a/services/core/java/com/android/server/policy/PhoneWindowManager.java b/services/core/java/com/android/server/policy/PhoneWindowManager.java
+index 41c38b9..ac88936 100644
+--- a/services/core/java/com/android/server/policy/PhoneWindowManager.java
++++ b/services/core/java/com/android/server/policy/PhoneWindowManager.java
+@@ -2043,6 +2043,71 @@ public class PhoneWindowManager implements WindowManagerPolicy {
+         filter = new IntentFilter(Intent.ACTION_USER_SWITCHED);
+         context.registerReceiver(mMultiuserReceiver, filter);
+ 
++        //++[Feature]drop input events once swiping navigation bar callback happens
++        mSystemGesturesForInputDispatcher = new SystemGesturesPointerEventListener(context,
++                new SystemGesturesPointerEventListener.Callbacks() {
++                    @Override
++                    public void onSwipeFromTop() {
++                        // no-op
++                    }
++                    @Override
++                    public void onSwipeFromBottom() {
++                        if (mNavigationBar != null && mNavigationBarPosition == NAV_BAR_BOTTOM) {
++                            requestTransientBars(mNavigationBar);
++
++                            mIsInSwipeQueueing = false;
++                            mIsDropSwipeQueueingEvents = true;
++                        }
++                    }
++                    @Override
++                    public void onSwipeFromRight() {
++                        if (mNavigationBar != null && mNavigationBarPosition == NAV_BAR_RIGHT) {
++                            requestTransientBars(mNavigationBar);
++
++                            mIsInSwipeQueueing = false;
++                            mIsDropSwipeQueueingEvents = true;
++                        }
++                    }
++                    @Override
++                    public void onSwipeFromLeft() {
++                        if (mNavigationBar != null && mNavigationBarPosition == NAV_BAR_LEFT) {
++                            requestTransientBars(mNavigationBar);
++                        }
++
++                        mIsInSwipeQueueing = false;
++                        mIsDropSwipeQueueingEvents = true;
++                    }
++                    @Override
++                    public void onFling(int durationMs) {
++                        // no-op
++                    }
++                    @Override
++                    public void onDown() {
++                        // no-op
++                    }
++                    @Override
++                    public void onUpOrCancel() {
++                        // no-op
++                    }
++                    @Override
++                    public void onDebug() {
++                        // no-op
++                    }
++                    @Override
++                    public void onMouseHoverAtTop() {
++                        // no-op
++                    }
++                    @Override
++                    public void onMouseHoverAtBottom() {
++                        // no-op
++                    }
++                    @Override
++                    public void onMouseLeaveFromEdge() {
++                        // no-op
++                    }
++                });
++        //--[Feature]drop input events once swiping navigation bar callback happens
++
+         // monitor for system gestures
+         mSystemGestures = new SystemGesturesPointerEventListener(context,
+                 new SystemGesturesPointerEventListener.Callbacks() {
+@@ -4500,6 +4565,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
+         mRestrictedScreenTop = mUnrestrictedScreenTop;
+         mRestrictedScreenWidth = mSystemGestures.screenWidth = mUnrestrictedScreenWidth;
+         mRestrictedScreenHeight = mSystemGestures.screenHeight = mUnrestrictedScreenHeight;
++
++        //++[Feature]drop input events once swiping navigation bar callback happens
++        mSystemGesturesForInputDispatcher.screenWidth = mSystemGestures.screenWidth;
++        mSystemGesturesForInputDispatcher.screenHeight = mSystemGestures.screenHeight;
++        //--[Feature]drop input events once swiping navigation bar callback happens
++
+         mDockLeft = mContentLeft = mVoiceContentLeft = mStableLeft = mStableFullscreenLeft
+                 = mCurLeft = mUnrestrictedScreenLeft;
+         mDockTop = mContentTop = mVoiceContentTop = mStableTop = mStableFullscreenTop
+@@ -6447,6 +6518,90 @@ public class PhoneWindowManager implements WindowManagerPolicy {
+         return 0;
+     }
+ 
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    //: enter swiping detecting process for the 4 conditions matching
++    //: 1.ACTION_DOWN  2.navigation bar is prepare for swiping  3.in the correct region  4.not in lockscreen
++    //: leave swiping detecting process for one of the conditions
++    //: a.ACTION_UP or ACTION_CANCEL  b.over 500ms since ACTION_DOWN  c.swipe successfully  d.no more touch event in 200ms
++    @Override
++    public int interceptMotionBeforeQueueingForSwipe(InputEvent event) {
++        final MotionEvent motionEvent = (MotionEvent)event;
++        final int action = motionEvent.getActionMasked();
++        mIsDropSwipeQueueingEvents = false;
++
++        synchronized (mSwipeQueuingLock) {
++            if (action == MotionEvent.ACTION_DOWN
++                    && mNavigationBarController.checkShowTransientBarLw()
++                    && mSystemGesturesForInputDispatcher.isInNavigationBarRegion(motionEvent, mNavigationBarPosition)
++                    && !isKeyguardLocked()) {
++                mIsInSwipeQueueing = true;
++
++               
++                    Slog.d(IPD_TAG, "interceptMotionBeforeQueueingForSwipe: touch down in navigation bar area");
++                
++            } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
++                mIsInSwipeQueueing = false;
++
++                
++                    Slog.d(IPD_TAG, "interceptMotionBeforeQueueingForSwipe: touch up");
++               
++            }
++
++            if (mIsInSwipeQueueing) {
++                mSystemGesturesForInputDispatcher.onPointerEvent(motionEvent);
++
++                // over 500ms case
++                if (mSystemGesturesForInputDispatcher.isOverSwipeTimeout(motionEvent)) {
++                    mIsInSwipeQueueing = false;
++
++                    
++                        Slog.d(IPD_TAG, "interceptMotionBeforeQueueingForSwipe: over 500ms");
++                  
++                }
++            }
++
++            mHandler.removeCallbacks(mFlushInputSwipeQueue);
++            if (mIsInSwipeQueueing) {
++                mHandler.postDelayed(mFlushInputSwipeQueue, NAVIGATION_BAR_SWIPE_NO_EVENT_TIMEOUT);
++                return SWIPE_QUEUE_ACTION_ENQUEUE; // enqueue events
++            } else if (mIsDropSwipeQueueingEvents) {
++               
++                    Slog.d(IPD_TAG, "interceptMotionBeforeQueueingForSwipe: navigation bar is showing up");
++               
++
++                return SWIPE_QUEUE_ACTION_DROPQUEUE; // drop all events because navigation bar is showing up
++            } else {
++                return SWIPE_QUEUE_ACTION_FLUSHQUEUE; // flush or bypass events
++            }
++        }
++    }
++
++    private static final int SWIPE_QUEUE_ACTION_FLUSHQUEUE = 0;
++    private static final int SWIPE_QUEUE_ACTION_ENQUEUE = 1;
++    private static final int SWIPE_QUEUE_ACTION_DROPQUEUE = 2;
++    private static final int NAVIGATION_BAR_SWIPE_NO_EVENT_TIMEOUT = 200;
++    private SystemGesturesPointerEventListener mSystemGesturesForInputDispatcher;
++    private final Object mSwipeQueuingLock = new Object();
++    private boolean mIsInSwipeQueueing = false;
++    private boolean mIsDropSwipeQueueingEvents = false;
++    private Runnable mFlushInputSwipeQueue = new Runnable() {
++        public void run() {
++            
++                Slog.d(IPD_TAG, "interceptMotionBeforeQueueingForSwipe: no touch event in 200ms");
++            
++
++            synchronized (mSwipeQueuingLock) {
++                try {
++                    mWindowManager.flushInputSwipeQueue();
++                    mIsInSwipeQueueing = false;
++                } catch (RemoteException e) {
++                    // Ignore
++                }
++            }
++        }
++    };
++    //--[Feature]drop input events once swiping navigation bar callback happens
++
+     private boolean shouldDispatchInputWhenNonInteractive(KeyEvent event) {
+         final boolean displayOff = (mDisplay == null || mDisplay.getState() == Display.STATE_OFF);
+ 
+diff --git a/services/core/java/com/android/server/policy/SystemGesturesPointerEventListener.java b/services/core/java/com/android/server/policy/SystemGesturesPointerEventListener.java
+index 598c58e..31986d2 100644
+--- a/services/core/java/com/android/server/policy/SystemGesturesPointerEventListener.java
++++ b/services/core/java/com/android/server/policy/SystemGesturesPointerEventListener.java
+@@ -241,6 +241,46 @@ public class SystemGesturesPointerEventListener implements PointerEventListener
+         return SWIPE_NONE;
+     }
+ 
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    private static final int NAV_BAR_BOTTOM = 0;
++    private static final int NAV_BAR_RIGHT = 1;
++    private static final int NAV_BAR_LEFT = 2;
++
++    public boolean isInNavigationBarRegion(MotionEvent event, int navigationBarPosition) {
++        boolean result = false;
++        float x = 0f;
++        float y = 0f;
++
++        final int pointerId = event.getPointerId(0);
++        final int i = findIndex(pointerId);
++        if (i != UNTRACKED_POINTER) {
++            x = event.getX(0);
++            y = event.getY(0);
++        }
++
++        if (navigationBarPosition == NAV_BAR_BOTTOM) {
++            if (y >= screenHeight - mSwipeStartThreshold) {
++                result = true;
++            }
++        } else if (navigationBarPosition == NAV_BAR_RIGHT) {
++            if (x >= screenWidth - mSwipeStartThreshold) {
++                result = true;
++            }
++        } else if (navigationBarPosition == NAV_BAR_LEFT) {
++            if (x <= mSwipeStartThreshold) {
++                result = true;
++            }
++        }
++
++        return result;
++    }
++
++    public boolean isOverSwipeTimeout(MotionEvent event) {
++        final long elapsed = event.getEventTime() - mDownTime[0];
++        return elapsed > SWIPE_TIMEOUT_MS;
++    }
++    //--[Feature]drop input events once swiping navigation bar callback happens
++
+     private final class FlingGestureDetector extends GestureDetector.SimpleOnGestureListener {
+         @Override
+         public boolean onSingleTapUp(MotionEvent e) {
+diff --git a/services/core/java/com/android/server/wm/InputMonitor.java b/services/core/java/com/android/server/wm/InputMonitor.java
+index 3caf89d7..3666d54 100644
+--- a/services/core/java/com/android/server/wm/InputMonitor.java
++++ b/services/core/java/com/android/server/wm/InputMonitor.java
+@@ -41,6 +41,9 @@ import android.util.ArrayMap;
+ import android.util.Log;
+ import android.util.Slog;
+ import android.view.InputChannel;
++//++[Feature]drop input events once swiping navigation bar callback happens
++import android.view.InputEvent;
++//--[Feature]drop input events once swiping navigation bar callback happens
+ import android.view.InputEventReceiver;
+ import android.view.KeyEvent;
+ import android.view.WindowManager;
+@@ -454,6 +457,13 @@ final class InputMonitor implements InputManagerService.WindowManagerCallbacks {
+                 whenNanos, policyFlags);
+     }
+ 
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    @Override
++    public int interceptMotionBeforeQueueingForSwipe(InputEvent event) {
++        return mService.mPolicy.interceptMotionBeforeQueueingForSwipe(event);
++    }
++    //--[Feature]drop input events once swiping navigation bar callback happens
++
+     /* Provides an opportunity for the window manager policy to process a key before
+      * ordinary dispatch. */
+     @Override
+diff --git a/services/core/java/com/android/server/wm/WindowManagerService.java b/services/core/java/com/android/server/wm/WindowManagerService.java
+index 6be7900..f41ad9d 100644
+--- a/services/core/java/com/android/server/wm/WindowManagerService.java
++++ b/services/core/java/com/android/server/wm/WindowManagerService.java
+@@ -7377,4 +7377,10 @@ public class WindowManagerService extends IWindowManager.Stub
+             }
+         }
+     }
++
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    public void flushInputSwipeQueue() {
++        mInputManager.flushInputSwipeQueue();
++    }
++    //--[Feature]drop input events once swiping navigation bar callback happens
+ }
+diff --git a/services/core/jni/com_android_server_input_InputManagerService.cpp b/services/core/jni/com_android_server_input_InputManagerService.cpp
+index 7ef069c..6b7abc0 100644
+--- a/services/core/jni/com_android_server_input_InputManagerService.cpp
++++ b/services/core/jni/com_android_server_input_InputManagerService.cpp
+@@ -77,6 +77,9 @@ static struct {
+     jmethodID filterInputEvent;
+     jmethodID interceptKeyBeforeQueueing;
+     jmethodID interceptMotionBeforeQueueingNonInteractive;
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    jmethodID interceptMotionBeforeQueueingForSwipe;
++    //--[Feature]drop input events once swiping navigation bar callback happens
+     jmethodID interceptKeyBeforeDispatching;
+     jmethodID dispatchUnhandledKey;
+     jmethodID checkInjectEventsPermission;
+@@ -236,6 +239,9 @@ public:
+     virtual void getDispatcherConfiguration(InputDispatcherConfiguration* outConfig);
+     virtual void interceptKeyBeforeQueueing(const KeyEvent* keyEvent, uint32_t& policyFlags);
+     virtual void interceptMotionBeforeQueueing(nsecs_t when, uint32_t& policyFlags);
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    virtual int32_t interceptMotionBeforeQueueingForSwipe(const InputEvent* inputEvent);
++    //--[Feature]drop input events once swiping navigation bar callback happens
+     virtual nsecs_t interceptKeyBeforeDispatching(
+             const sp<InputWindowHandle>& inputWindowHandle,
+             const KeyEvent* keyEvent, uint32_t policyFlags);
+@@ -1016,6 +1022,43 @@ void NativeInputManager::interceptMotionBeforeQueueing(nsecs_t when, uint32_t& p
+     }
+ }
+ 
++//++[Feature]drop input events once swiping navigation bar callback happens
++int32_t NativeInputManager::interceptMotionBeforeQueueingForSwipe(const InputEvent* inputEvent) {
++    jobject inputEventObj;
++
++    JNIEnv* env = jniEnv();
++    switch (inputEvent->getType()) {
++    case AINPUT_EVENT_TYPE_MOTION:
++        inputEventObj = android_view_MotionEvent_obtainAsCopy(env,
++                static_cast<const MotionEvent*>(inputEvent));
++        break;
++    default:
++        return 0; // dispatch the event normally
++    }
++
++    if (!inputEventObj) {
++        ALOGE("Failed to obtain input event object for interceptMotionBeforeQueueingForSwipe.");
++        return 0; // dispatch the event normally
++    }
++
++    jint wmActions = env->CallIntMethod(mServiceObj,
++                gServiceClassInfo.interceptMotionBeforeQueueingForSwipe,
++                inputEventObj);
++    if (checkAndClearExceptionFromCallback(env,
++            "interceptMotionBeforeQueueingForSwipe")) {
++        wmActions = 0;
++    }
++    env->DeleteLocalRef(inputEventObj);
++
++    return wmActions;
++}
++
++static void nativeFlushInputSwipeQueue(JNIEnv* env, jclass clazz, jlong ptr) {
++    NativeInputManager* im = reinterpret_cast<NativeInputManager*>(ptr);
++    im->getInputManager()->getDispatcher()->flushInputSwipeQueue();
++}
++//--[Feature]drop input events once swiping navigation bar callback happens
++
+ void NativeInputManager::handleInterceptActions(jint wmActions, nsecs_t when,
+         uint32_t& policyFlags) {
+     if (wmActions & WM_ACTION_PASS_TO_USER) {
+@@ -1639,6 +1682,13 @@ static const JNINativeMethod gInputManagerMethods[] = {
+             (void*) nativeReloadPointerIcons },
+     { "nativeSetCustomPointerIcon", "(JLandroid/view/PointerIcon;)V",
+             (void*) nativeSetCustomPointerIcon },
++
++
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    { "nativeFlushInputSwipeQueue", "(J)V",
++            (void*) nativeFlushInputSwipeQueue },
++    //--[Feature]drop input events once swiping navigation bar callback happens
++
+ };
+ 
+ #define FIND_CLASS(var, className) \
+@@ -1689,6 +1739,11 @@ int register_android_server_InputManager(JNIEnv* env) {
+     GET_METHOD_ID(gServiceClassInfo.interceptMotionBeforeQueueingNonInteractive, clazz,
+             "interceptMotionBeforeQueueingNonInteractive", "(JI)I");
+ 
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    GET_METHOD_ID(gServiceClassInfo.interceptMotionBeforeQueueingForSwipe, clazz,
++            "interceptMotionBeforeQueueingForSwipe", "(Landroid/view/InputEvent;)I");
++    //--[Feature]drop input events once swiping navigation bar callback happens
++
+     GET_METHOD_ID(gServiceClassInfo.interceptKeyBeforeDispatching, clazz,
+             "interceptKeyBeforeDispatching",
+             "(Lcom/android/server/input/InputWindowHandle;Landroid/view/KeyEvent;I)J");
+diff --git a/tools/layoutlib/bridge/src/android/view/IWindowManagerImpl.java b/tools/layoutlib/bridge/src/android/view/IWindowManagerImpl.java
+index 15fd2ce..9ecfbcb 100644
+--- a/tools/layoutlib/bridge/src/android/view/IWindowManagerImpl.java
++++ b/tools/layoutlib/bridge/src/android/view/IWindowManagerImpl.java
+@@ -513,6 +513,11 @@ public class IWindowManagerImpl implements IWindowManager {
+         return false;
+     }
+ 
++    //++[Feature]drop input events once swiping navigation bar callback happens
++    public void flushInputSwipeQueue() throws RemoteException {
++    }
++    //--[Feature]drop input events once swiping navigation bar callback happens
++
+     @Override
+     public Bitmap screenshotWallpaper() throws RemoteException {
+         return null;
+-- 
+1.9.1
+
