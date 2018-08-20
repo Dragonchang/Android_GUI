@@ -1,0 +1,274 @@
+void InputDispatcher::notifyKey(const NotifyKeyArgs* args) {
+
+    //++[Debug][2013/06/19][Input] Log input messages
+    ALOGD("notifyK-evT=%lld,dev=%d,src=0x%x,ac=0x%x,"
+            "key=0x%x,meta=0x%x,downT=%lld",
+            getEventTime(args->eventTime), args->deviceId, args->source,
+            args->action, args->keyCode, args->metaState, getEventTime(args->downTime));
+    //--[Debug][2013/06/19][Input] Log input messages
+
+
+
+void InputDispatcher::notifyMotion(const NotifyMotionArgs* args) {
+    //++[Debug][2013/06/19][Input] Log input messages
+    if(args->action != AMOTION_EVENT_ACTION_MOVE && args->action != AMOTION_EVENT_ACTION_HOVER_MOVE) {
+    ALOGD("notifyM-evT=%lld,dev=%d,src=0x%x, "
+            "ac=0x%x, acButton=0x%x, downT=%lld",
+            getEventTime(args->eventTime), args->deviceId, args->source,
+            args->action, args->actionButton, getEventTime(args->downTime));
+
+#ifdef CFLAG_DEBUG
+    String8 pointInfo;
+    for (uint32_t i = 0; i < args->pointerCount; i++) {
+        pointInfo.clear();
+        pointInfo.appendFormat("id[%d]=%d,tool=%d,x=%d,y=%d",
+                i, args->pointerProperties[i].id, args->pointerProperties[i].toolType,
+                (int)args->pointerCoords[i].getAxisValue(AMOTION_EVENT_AXIS_X),
+                (int)args->pointerCoords[i].getAxisValue(AMOTION_EVENT_AXIS_Y));
+        if (args->action == AMOTION_EVENT_ACTION_SCROLL) {
+            pointInfo.appendFormat(",hscroll=%.2f,vscroll=%.2f",
+                    args->pointerCoords[i].getAxisValue(AMOTION_EVENT_AXIS_HSCROLL),
+                    args->pointerCoords[i].getAxisValue(AMOTION_EVENT_AXIS_VSCROLL));
+        }
+
+        ALOGD("%s", pointInfo.string());
+    }
+#endif
+    }
+    //--[Debug][2013/06/19][Input] Log input messages
+
+
+
+int32_t InputDispatcher::injectInputEvent(const InputEvent* event, int32_t displayId,
+        int32_t injectorPid, int32_t injectorUid, int32_t syncMode, int32_t timeoutMillis,
+        uint32_t policyFlags) {
+//++[Debug][2013/06/19][Input] Log input messages
+#ifdef CFLAG_DEBUG
+    String8 injectInfo;
+    injectInfo.clear();
+    switch (event->getType()) {
+    case AINPUT_EVENT_TYPE_KEY: {
+        const KeyEvent* keyEvent = static_cast<const KeyEvent*>(event);
+        injectInfo.appendFormat("injectEvent-Type=K(%d-%d), displayId=%d", keyEvent->getKeyCode(), keyEvent->getAction(), displayId);
+        break;
+    }
+    case AINPUT_EVENT_TYPE_MOTION: {
+        const MotionEvent* motionEvent = static_cast<const MotionEvent*>(event);
+        int32_t action = motionEvent->getAction();
+        int32_t actionButton = motionEvent->getActionButton();
+        injectInfo.appendFormat("injectEvent-Type=M(%d, %d), displayId=%d", action, actionButton, displayId);
+        size_t pointerCount = motionEvent->getPointerCount();
+        const PointerProperties* pointerProperties = motionEvent->getPointerProperties();
+        if (validateMotionEvent(action, actionButton, pointerCount, pointerProperties)
+                && (action != AMOTION_EVENT_ACTION_MOVE && action != AMOTION_EVENT_ACTION_HOVER_MOVE)) {
+            for (uint32_t i = 0; i < pointerCount; i++) {
+                injectInfo.appendFormat("id[%d]=%d,tool=%d,x=%d,y=%d",
+                        i, pointerProperties[i].id, pointerProperties[i].toolType,
+                        (int)motionEvent->getRawAxisValue(AMOTION_EVENT_AXIS_X, i),
+                        (int)motionEvent->getRawAxisValue(AMOTION_EVENT_AXIS_Y, i));
+            }
+        }
+        break;
+    }
+    default:
+        injectInfo.appendFormat("injectEvent-Type=U(0)");
+        break;
+    }
+    injectInfo.appendFormat(",%d,%d,%d,%d,0x%08x", injectorPid, injectorUid, syncMode, timeoutMillis, policyFlags);
+    ALOGD("%s", injectInfo.string());
+#endif
+//--[Debug][2013/06/19][Input] Log input messages
+
+    //++[Debug][2013/06/19][Input] Log input messages
+    ALOGD("injectFinish,R=%d,%d,%d",
+            injectionResult, injectorPid, injectorUid);
+    //--[Debug][2013/06/19][Input] Log input messages
+
+    return injectionResult;
+}
+
+void InputDispatcher::setInputWindows(const Vector<sp<InputWindowHandle> >& inputWindowHandles) {
+        if (mFocusedWindowHandle != newFocusedWindowHandle) {
+            if (mFocusedWindowHandle != NULL) {
+#if DEBUG_FOCUS
+                ALOGD("Focus left window: %s",
+                        mFocusedWindowHandle->getName().string());
+#endif
+
+                //++[Debug][2013/06/19][Input] Log input messages
+#ifdef HTC_DEBUG_FLAG
+                ALOGD("FocusL:%s",
+                        mFocusedWindowHandle->getName().string());
+#endif
+                //--[Debug][2013/06/19][Input] Log input messages
+
+            if (newFocusedWindowHandle != NULL) {
+#if DEBUG_FOCUS
+                ALOGD("Focus entered window: %s",
+                        newFocusedWindowHandle->getName().string());
+#endif
+
+                //++[Debug][2013/06/19][Input] Log input messages
+#ifdef HTC_DEBUG_FLAG
+                ALOGD("FocusE:%s",
+                        newFocusedWindowHandle->getName().string());
+#endif
+                //--[Debug][2013/06/19][Input] Log input messages
+
+
+
+
+void InputDispatcher::dispatchOnce() {
+    nsecs_t nextWakeupTime = LONG_LONG_MAX;
+    { 
+        if (!haveCommandsLocked()) {
+            dispatchOnceInnerLocked(&nextWakeupTime);
+        }
+        //++[Debug]Log input messages
+        else {
+            ALOGD("Commands locked, dispatchOnceInnerLocked() not be called");
+        }
+        //--[Debug]Log input messages
+
+
+void InputDispatcher::dispatchEventLocked(nsecs_t currentTime,
+        EventEntry* eventEntry, const Vector<InputTarget>& inputTargets) {
+#if DEBUG_DISPATCH_CYCLE
+    ALOGD("dispatchEventToCurrentInputTargets");
+#endif
+
+    ALOG_ASSERT(eventEntry->dispatchInProgress); // should already have been set to true
+
+    pokeUserActivityLocked(eventEntry);
+
+    for (size_t i = 0; i < inputTargets.size(); i++) {
+        const InputTarget& inputTarget = inputTargets.itemAt(i);
+
+        ssize_t connectionIndex = getConnectionIndexLocked(inputTarget.inputChannel);
+        if (connectionIndex >= 0) {
+            sp<Connection> connection = mConnectionsByFd.valueAt(connectionIndex);
+            prepareDispatchCycleLocked(currentTime, connection, eventEntry, &inputTarget);
+
+//++[Debug][2013/06/19][Input] Log input messages
+#ifdef CFLAG_DEBUG
+            if (eventEntry->type == EventEntry::TYPE_KEY) {
+                KeyEntry* keyEntry = static_cast<KeyEntry*>(eventEntry);
+                int32_t keyCode = keyEntry->keyCode;
+                int32_t action = keyEntry->action;
+            ALOGD("DispatchK[%d,%d]%s,evT=%lld,cuT=%lld",
+                  keyCode, action, inputTarget.inputChannel->getName().string(), getEventTime(eventEntry->eventTime), getEventTime(currentTime));
+            } else if (eventEntry->type == EventEntry::TYPE_MOTION) {
+                MotionEntry* motionEntry = static_cast<MotionEntry*>(eventEntry);
+                int32_t action = motionEntry->action;
+                int32_t actionButton = motionEntry->actionButton;
+                if (action != AMOTION_EVENT_ACTION_MOVE && action != AMOTION_EVENT_ACTION_HOVER_MOVE)
+                ALOGD("DispatchM[%d,%d]%s,evT=%lld,cuT=%lld",
+                      action, actionButton, inputTarget.inputChannel->getName().string(), getEventTime(eventEntry->eventTime), getEventTime(currentTime));
+            }
+#endif
+//--[Debug][2013/06/19][Input] Log input messages
+
+
+
+
+void InputDispatcher::doDispatchCycleFinishedLockedInterruptible(
+        CommandEntry* commandEntry) {
+    sp<Connection> connection = commandEntry->connection;
+    nsecs_t finishTime = commandEntry->eventTime;
+    uint32_t seq = commandEntry->seq;
+    bool handled = commandEntry->handled;
+
+    // Handle post-event policy actions.
+    DispatchEntry* dispatchEntry = connection->findWaitQueueEntry(seq);
+    if (dispatchEntry) {
+        nsecs_t eventDuration = finishTime - dispatchEntry->deliveryTime;
+        if (eventDuration > SLOW_EVENT_PROCESSING_WARNING_TIMEOUT) {
+            String8 msg;
+            msg.appendFormat("Window '%s' spent %0.1fms processing the last input event: ",
+                    connection->getWindowName(), eventDuration * 0.000001f);
+            dispatchEntry->eventEntry->appendDescription(msg);
+            ALOGI("%s", msg.string());
+        }
+
+        bool restartEvent;
+        if (dispatchEntry->eventEntry->type == EventEntry::TYPE_KEY) {
+            KeyEntry* keyEntry = static_cast<KeyEntry*>(dispatchEntry->eventEntry);
+
+            //++[Debug][2013/06/19][Input] Log input messages
+            if (keyEntry->repeatCount < 1) {
+                ALOGD("FinishedK(0x%x, 0x%x)-evT=%lld",
+                        keyEntry->keyCode, keyEntry->action, getEventTime(keyEntry->eventTime));
+            }
+            //--[Debug][2013/06/19][Input] Log input messages
+
+            restartEvent = afterKeyEventLockedInterruptible(connection,
+                    dispatchEntry, keyEntry, handled);
+        } else if (dispatchEntry->eventEntry->type == EventEntry::TYPE_MOTION) {
+            MotionEntry* motionEntry = static_cast<MotionEntry*>(dispatchEntry->eventEntry);
+
+            //++[Debug][2013/06/19][Input] Log input messages
+            if (motionEntry->action != AMOTION_EVENT_ACTION_MOVE && motionEntry->action != AMOTION_EVENT_ACTION_HOVER_MOVE) {
+                ALOGD("FinishedM(0x%x, 0x%x)-evT=%lld",
+                        motionEntry->action, motionEntry->actionButton, getEventTime(motionEntry->eventTime));
+            }
+            //--[Debug][2013/06/19][Input] Log input messages
+
+
+InputEventReceiver.java
+
+    // Called from native code.
+    @SuppressWarnings("unused")
+    private void dispatchInputEvent(int seq, InputEvent event) {
+        //++[Debug][2013/06/18][Input] for InputEventReceiver debug
+        if (DEBUG) {
+            printEventLog(event, "dispatchInputEvent");
+        }
+        //--[Debug][2013/06/18][Input] for InputEventReceiver debug
+        mSeqMap.put(event.getSequenceNumber(), seq);
+        onInputEvent(event);
+    }
+
+
+    public final void finishInputEvent(InputEvent event, boolean handled) {
+        //++[Issue Fix][2012/11/15][Input] Keep synchronization of native InputReceiver object
+        synchronized(this) {
+        //--[Issue Fix][Abnerl_Wang][2012/11/15][Input] Keep synchronization of native InputReceiver object
+
+        if (event == null) {
+            throw new IllegalArgumentException("event must not be null");
+        }
+        if (mReceiverPtr == 0) {
+            Log.w(TAG, "Attempted to finish an input event but the input event "
+                    + "receiver has already been disposed.");
+        } else {
+            int index = mSeqMap.indexOfKey(event.getSequenceNumber());
+            if (index < 0) {
+                Log.w(TAG, "Attempted to finish an input event that is not in progress.");
+            } else {
+                int seq = mSeqMap.valueAt(index);
+                mSeqMap.removeAt(index);
+                //++[Debug][2013/06/18][Input] for InputEventReceiver debug
+                if (DEBUG) {
+                    printEventLog(event, "finishInputEvent");
+                }
+                //--[Debug][2013/06/18][Input] for InputEventReceiver debug
+
+
+
+    //++[Debug][2013/06/18][Input] for InputEventReceiver debug
+    private void printEventLog(InputEvent event, final String prefix) {
+        if (event instanceof KeyEvent) {
+            KeyEvent keyevent = (KeyEvent)event;
+            if (keyevent.getRepeatCount() < 1) {
+                Log.d(TAG, prefix + " - " + keyevent.toString());
+            }
+        } else if (event instanceof MotionEvent) {
+            MotionEvent motionevent = (MotionEvent)event;
+            if (!(motionevent.getAction() == MotionEvent.ACTION_MOVE || motionevent.getAction() == MotionEvent.ACTION_HOVER_MOVE)) {
+                Log.d(TAG, prefix + " - " + motionevent.toString());
+            }
+        }
+    }
+    //--[Debug][2013/06/18][Input] for InputEventReceiver debug
+
+
